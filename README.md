@@ -1,9 +1,9 @@
-# ios Restriction PassCode Crack
+# iOS Restriction Passcode Crack
 
 
 ## Overview 
 
-**ios Restriction PassCode Cracker**, this version of the application is written with Python programming language,which is used to crack the Restriction PassCode of iphone/ipad.
+This version of the application is written with Python programming language,which is used to crack the Restriction PassCode of iphone/ipad.
 
 ### Brute Force
 
