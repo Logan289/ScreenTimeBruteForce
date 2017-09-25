@@ -16,7 +16,7 @@
 
 
 ### How to Use
-1.Make sure to use Itunes to back up the ios device to Computer
+1. Make sure to use Itunes to back up the ios device to Computer
 
 2. Run ioscrack.py
 ```python 
