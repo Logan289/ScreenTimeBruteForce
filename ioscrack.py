@@ -34,6 +34,10 @@ try:
 except Exception as e:
     while not secret64:
         secret64 = raw_input("Enter Secret Key: ")
+        if secret64 < 3:
+            secret64 = NONE
     while not salt64:
         salt64 = raw_input("Enter Salt: ")
+        if salt64 < 10:
+            salt64 = NONE
     crack(secret64, salt64)
