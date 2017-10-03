@@ -11,7 +11,7 @@ def crack(secret64, salt64):
     print "secret: ", secret64
     print "salt: ", salt64
     secret = base64.b64decode(secret64)
-    salt = base64.b64decode(salt64) 
+    salt = base64.b64decode(salt64)
     start_t = time()
     for i in range(10000):
         key = "%04d" % ( i )
