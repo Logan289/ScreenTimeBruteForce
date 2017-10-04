@@ -1,7 +1,7 @@
 # iOS Restriction Passcode Crack [![Codacy Badge](https://api.codacy.com/project/badge/Grade/017319df2b8d4a588c0c92d5730b7811)](https://www.codacy.com/app/thehappydinoa/ios_Restriction_PassCode_Crack---Python-version?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=thehappydinoa/ios_Restriction_PassCode_Crack---Python-version&amp;utm_campaign=Badge_Grade)
 
 
-## Overview 
+## Overview
 
 This version of the application is written with Python programming language,which is used to crack the Restriction PassCode of iphone/ipad.
 
@@ -19,11 +19,14 @@ This version of the application is written with Python programming language,whic
 1. Make sure to use Itunes to back up the ios device to Computer
 
 2. Run ioscrack.py
-```python 
+```python
 python ioscrack.py
 ```
 
-### Source Code
-```python
-  ioscrack.py : main process
-```
+## DEPENDENCIES
+
+This has been tested with Python 2.6 and 2.7.
+
+## LICENSE
+
+MIT License
