@@ -1,4 +1,4 @@
-# iOS Restriction Passcode Crack [![Codacy Badge](https://api.codacy.com/project/badge/Grade/5c343edc44b8436588b1a2fc153a98d4)](https://www.codacy.com/app/thehappydinoa/iOS-Restriction-Crack?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=thehappydinoa/iOS-Restriction-Crack&amp;utm_campaign=Badge_Grade)
+# iOS Restriction Passcode Crack [![Codacy Badge](https://api.codacy.com/project/badge/Grade/5c343edc44b8436588b1a2fc153a98d4)](https://www.codacy.com/app/thehappydinoa/iOS-Restriction-Crack?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=thehappydinoa/iOS-Restriction-Crack&amp;utm_campaign=Badge_Grade) [![Codacy Badge](https://api.codacy.com/project/badge/Coverage/5c343edc44b8436588b1a2fc153a98d4)](https://www.codacy.com/app/thehappydinoa/iOS-Restriction-Crack?utm_source=github.com&utm_medium=referral&utm_content=thehappydinoa/iOS-Restriction-Crack&utm_campaign=Badge_Coverage)
 
 
 ## Overview
