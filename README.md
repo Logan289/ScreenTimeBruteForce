@@ -19,9 +19,10 @@ This version of the application is written in Python, which is used to crack the
 1. Make sure to use iTunes to backup the iOS device to computer
 
 2. Run ioscrack.py
-```bash
-python ioscrack.py
-```
+
+  ```bash
+  python ioscrack.py
+  ```
 
 ## DEPENDENCIES
 
