@@ -24,6 +24,8 @@ This version of the application is written in Python, which is used to crack the
   python ioscrack.py
   ```
 
+3. If ioscrack couldn't find your back up please try to [find it manually](https://github.com/thehappydinoa/iOSRestrictionBruteForce/wiki/Manually-find-restrictions-hash-and-salt)
+
 ## DEPENDENCIES
 
 This has been tested with Python 2.6 and 2.7.
