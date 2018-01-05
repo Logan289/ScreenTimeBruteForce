@@ -9,9 +9,9 @@ This version of the application is written in Python, which is used to crack the
 
 ## DEPENDENCIES
 
-This has been tested with Python 2
+This has been tested with [Python 2.7](https://www.python.org/downloads/release/python-2714/)
 
-Requires Passlib 1.7+ Install with `pip install passlib`
+Requires [Passlib](https://passlib.readthedocs.io/en/stable/) Install with `pip install passlib`
 
 ## How to Use
 
@@ -49,9 +49,13 @@ optional arguments:
 
 ## How It Works
 
-1. Decode the Base64 key and salt.
+Done by using the pbkdf2-hmac-sha1 hash with the Passlib python module
 
-2. Brute force pins from 1 to 9999 to with the pbkdf2-hmac-sha1 hash with Passlib
+1. Trys the [top 20 four-digit](http://www.datagenetics.com/blog/september32012/index.html) pins
+
+2. Trys birthdays between 1900-2017
+
+3. Brute force pins from 1 to 9999
 
 ## LICENSE
 
