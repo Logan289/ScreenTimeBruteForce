@@ -158,8 +158,10 @@ def findHashes(paths):
 
 
 def main():
-    BACKUP_PATHS = [os.path.join(os.environ['HOME'], 'Library', 'Application Support', 'MobileSync', 'Backup/'),
-                    os.path.join(os.environ['HOME'], 'AppData', 'Roaming', 'Apple Computer', 'MobileSync', 'Backup\\'), os.path.join(os.path.dirname(__file__), "Backups/")]
+    if "win" in sys.platform:
+        BACKUP_PATHS = [os.path.join(os.environ['USERPROFILE'], 'AppData', 'Roaming', 'Apple Computer', 'MobileSync', 'Backup\\'), os.path.join(os.path.dirname(__file__), "Backups/")]
+    else:
+        BACKUP_PATHS = [os.path.join(os.environ['HOME'], 'Library', 'Application Support', 'MobileSync', 'Backup/'), os.path.join(os.path.dirname(__file__), "Backups/")]
     try:
         logo()
         if args.automatically and not args.interactive:
