@@ -46,6 +46,18 @@ class color:
     UNDERLINE = '\033[4m'
     LOGGING = '\33[34m'
 
+def disableColor():
+    color.HEADER = ''
+    color.IMPORTANT = ''
+    color.NOTICE = ''
+    color.OKBLUE = ''
+    color.OKGREEN = ''
+    color.WARNING = ''
+    color.FAIL = ''
+    color.END = ''
+    color.UNDERLINE = ''
+    color.LOGGING = ''
+
 
 def logo():
     print("%s\n iOSRestrictionBruteForce" % color.HEADER)
@@ -171,6 +183,7 @@ def findHashes(paths):
 
 def main():
     if "nt" in os.name:
+        disableColor()
         BACKUP_PATHS = [os.path.join(os.environ['USERPROFILE'], 'AppData', 'Roaming', 'Apple Computer',
                                      'MobileSync', 'Backup\\'), os.path.join(os.path.dirname(__file__), "Backups/")]
     else:
