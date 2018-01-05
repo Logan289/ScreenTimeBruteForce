@@ -7,13 +7,11 @@ This version of the application is written in Python, which is used to crack the
 
 ![Restriction Passcode](https://cdn.igeeksblog.com/wp-content/uploads/2016/10/Tap-on-Restrictions-in-iOS-10-on-iPhone.jpg)
 
-## Brute Force
+## DEPENDENCIES
 
-1. Get the Base64 key and salt from the backup file in Computer.
+This has been tested with Python 2
 
-2. Decode the Base64 key and salt.
-
-3. Try from 1 to 9999 to with the pbkdf2-hmac-sha1 hash with Passlib
+Requires Passlib 1.7+ Install with `pip install passlib`
 
 ## How to Use
 
@@ -49,11 +47,11 @@ optional arguments:
                         where backups are located
 ```
 
-## DEPENDENCIES
+## How It Works
 
-This has been tested with Python 2.6 and 2.7.
+1. Decode the Base64 key and salt.
 
-Requires Passlib 1.7 Install with `pip install passlib`
+2. Brute force pins from 1 to 9999 to with the pbkdf2-hmac-sha1 hash with Passlib
 
 ## LICENSE
 
