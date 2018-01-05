@@ -8,7 +8,6 @@ from time import time
 import argparse
 import os
 import os.path
-import sys
 
 
 def is_folder(parser, path):
@@ -158,7 +157,7 @@ def findHashes(paths):
 
 
 def main():
-    if "win" in sys.platform:
+    if "nt" in os.name:
         BACKUP_PATHS = [os.path.join(os.environ['USERPROFILE'], 'AppData', 'Roaming', 'Apple Computer', 'MobileSync', 'Backup\\'), os.path.join(os.path.dirname(__file__), "Backups/")]
     else:
         BACKUP_PATHS = [os.path.join(os.environ['HOME'], 'Library', 'Application Support', 'MobileSync', 'Backup/'), os.path.join(os.path.dirname(__file__), "Backups/")]
