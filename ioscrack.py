@@ -139,8 +139,21 @@ def findHash(path):
                                       (color.OKBLUE, secret64, salt64, color.END))
                             crack(secret64, salt64)
                         except IOError:
-                            print("%sNo restriction hash found\n%s" %
-                                  (color.FAIL, color.END))
+                            try:
+                                passfile = open(path + bkup_dir +
+                                                "/39/398bc9c2aeeab4cb0c12ada0f52eea12cf14f40b", "r")
+                                line_list = passfile.readlines()
+                                secret64 = line_list[6][1:29]
+                                salt64 = line_list[10][1:9]
+                                print("%sCracking restrictions passcode for %s... %s" %
+                                      (color.OKBLUE, deviceName, color.END))
+                                if args.verbose:
+                                    print("%sSecret Key Found: %s \nSalt Found: %s %s" %
+                                          (color.OKBLUE, secret64, salt64, color.END))
+                                crack(secret64, salt64)
+                            except IOError:
+                                print("%sNo restriction hash found\n%s" %
+                                      (color.FAIL, color.END))
                 except OSError as e:
                     print(
                         "Unable to find backups with restrictions with passcode in %s" % bkup_dir)
@@ -158,9 +171,11 @@ def findHashes(paths):
 
 def main():
     if "nt" in os.name:
-        BACKUP_PATHS = [os.path.join(os.environ['USERPROFILE'], 'AppData', 'Roaming', 'Apple Computer', 'MobileSync', 'Backup\\'), os.path.join(os.path.dirname(__file__), "Backups/")]
+        BACKUP_PATHS = [os.path.join(os.environ['USERPROFILE'], 'AppData', 'Roaming', 'Apple Computer',
+                                     'MobileSync', 'Backup\\'), os.path.join(os.path.dirname(__file__), "Backups/")]
     else:
-        BACKUP_PATHS = [os.path.join(os.environ['HOME'], 'Library', 'Application Support', 'MobileSync', 'Backup/'), os.path.join(os.path.dirname(__file__), "Backups/")]
+        BACKUP_PATHS = [os.path.join(os.environ['HOME'], 'Library', 'Application Support',
+                                     'MobileSync', 'Backup/'), os.path.join(os.path.dirname(__file__), "Backups/")]
     try:
         logo()
         if args.automatically and not args.interactive:
