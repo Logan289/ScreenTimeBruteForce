@@ -16,9 +16,13 @@ This version of the application is written in Python, which is used to crack the
 
 ## How to Use
 
-1. Make sure to use iTunes to backup the iOS device to computer
+1. Clone repository
 
-2. Run ioscrack.py
+`git clone https://github.com/thehappydinoa/iOSRestrictionBruteForce && cd iOSRestrictionBruteForce`
+
+2. Make sure to use iTunes to backup the iOS device to computer
+
+3. Run ioscrack.py
 
   `python ioscrack.py -a`
 
