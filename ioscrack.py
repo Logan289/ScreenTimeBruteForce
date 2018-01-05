@@ -5,14 +5,34 @@ from passlib.utils.pbkdf2 import pbkdf2
 from plistlib import readPlist
 from base64 import b64decode
 from time import time
+import argparse
 import os
 import os.path
 import sys
 
-BACKUP_PATHS = [os.path.join(os.environ['HOME'], 'Library', 'Application Support', 'MobileSync', 'Backup/'),
-                os.path.join(os.environ['HOME'], 'AppData', 'Roaming', 'Apple Computer', 'MobileSync', 'Backup\\'), os.path.join(os.path.dirname(__file__), "Backups/")]
-COMMON_KEYS = [1234, 1111, 0000, 1212, 7777, 1004, 2000, 4444, 2222,
-               6969, 9999, 3333, 5555, 6666, 1122, 1313, 8888, 4321, 2001, 1010, 2580]
+
+def is_folder(parser, path):
+    if not os.path.exists(path):
+        parser.error("The folder %s does not exist!" % path)
+    else:
+        if path.endswith('/'):
+            return path
+        else:
+            return path + '/'
+
+
+parser = argparse.ArgumentParser(
+    description="a script which is used to crack the restriction passcode of an iPhone/iPad through a flaw in unencrypted backups allowing the hash and salt to be discovered")
+parser.add_argument("-v", "--verbose", help="increase output verbosity",
+                    action="store_true")
+parser.add_argument("-a", "--automatically", help="automatically finds and cracks hashes",
+                    action="store_true")
+parser.add_argument("-i", "--interactive", help="prompts user for input",
+                    action="store_true")
+parser.add_argument("-b", "--backup", help="where backups are located", metavar="folder",
+                    type=lambda x: is_folder(parser, x))
+
+args = parser.parse_args()
 
 
 class color:
@@ -30,7 +50,7 @@ class color:
 
 def logo():
     print("%s\n iOSRestrictionBruteForce" % color.HEADER)
-    print(" Written by thehappydinoa %s" % color.END)
+    print(" Written by thehappydinoa %s\n" % color.END)
 
 
 def check(secret64, salt64, key):
@@ -41,6 +61,8 @@ def check(secret64, salt64, key):
 
 
 def crack(secret64, salt64):
+    COMMON_KEYS = [1234, 1111, 0000, 1212, 7777, 1004, 2000, 4444, 2222,
+                   6969, 9999, 3333, 5555, 6666, 1122, 1313, 8888, 4321, 2001, 1010, 2580]
     start_t = time()
     # Top 20 common pins
     for i in COMMON_KEYS:
@@ -71,54 +93,61 @@ def crack(secret64, salt64):
 
 
 def prompt():
-    response = raw_input(
-        "Do you want to manually enter a hash and salt? (Y/n): ")
-    if (response == 'y' or response == 'Y'):
-        secret64 = raw_input("Enter Secret Key: ")
-        if secret64 < 3 or secret64 == "":
-            print("%sInvalid Key %s" %
-                  (color.FAIL, color.END))
-            exit()
-        salt64 = raw_input("Enter Salt: ")
-        if salt64 < 10 or salt64 == "":
-            print("%sInvalid Salt %s" %
-                  (color.FAIL, color.END))
-            exit()
-        crack(secret64, salt64)
+    secret64 = raw_input("\nEnter Secret Key: ")
+    if secret64 < 3 or secret64 == "":
+        print("%sInvalid Key %s" %
+              (color.FAIL, color.END))
+        exit()
+    salt64 = raw_input("Enter Salt: ")
+    if salt64 < 10 or salt64 == "":
+        print("%sInvalid Salt %s" %
+              (color.FAIL, color.END))
+        exit()
+    crack(secret64, salt64)
 
 
 def findHash(path):
     print("\n%sLooking for backups in %s..." % (color.OKBLUE, path)),
     try:
         backup_dir = os.listdir(path)
-        print("%sDirectory Found %s" % (color.OKGREEN, color.END))
-        for bkup_dir in backup_dir:
-            try:
-                INFOPATH = path + bkup_dir + "/Info.plist"
-                if os.path.isfile(INFOPATH):
-                    pl = readPlist(INFOPATH)
-                    try:
-                        deviceName = pl['Device Name']
-                        lastBackupDate = pl['Last Backup Date']
-                        print('\n%sFound Backup for %s as of %s %s \n %s' %
-                              (color.OKGREEN, deviceName, str(lastBackupDate), color.END, bkup_dir))
-                    except:
-                        break
-                    try:
-                        passfile = open(path + bkup_dir +
-                                        "/398bc9c2aeeab4cb0c12ada0f52eea12cf14f40b", "r")
-                        line_list = passfile.readlines()
-                        secret64 = line_list[6][1:29]
-                        salt64 = line_list[10][1:9]
-                        print("%sCracking restrictions passcode for %s... %s" %
-                              (color.OKBLUE, deviceName, color.END))
-                        crack(secret64, salt64)
-                    except IOError:
-                        print("%sNo restriction hash found\n%s" %
-                              (color.FAIL, color.END))
-            except OSError as e:
-                print(
-                    "Unable to find backups with restrictions with passcode in %s" % bkup_dir)
+        if len(backup_dir) > 0:
+            print("%sDirectory Found %s" % (color.OKGREEN, color.END))
+            for bkup_dir in backup_dir:
+                try:
+                    INFOPATH = path + bkup_dir + "/Info.plist"
+                    if os.path.isfile(INFOPATH):
+                        pl = readPlist(INFOPATH)
+                        try:
+                            deviceName = pl['Device Name']
+                            lastBackupDate = pl['Last Backup Date']
+                            print('\n%sFound Backup for %s as of %s %s' %
+                                  (color.OKGREEN, deviceName, str(lastBackupDate), color.END))
+                            if args.verbose:
+                                print("%sUDID: %s %s" %
+                                      (color.OKGREEN, bkup_dir, color.END))
+                        except:
+                            break
+                        try:
+                            passfile = open(path + bkup_dir +
+                                            "/398bc9c2aeeab4cb0c12ada0f52eea12cf14f40b", "r")
+                            line_list = passfile.readlines()
+                            secret64 = line_list[6][1:29]
+                            salt64 = line_list[10][1:9]
+                            print("%sCracking restrictions passcode for %s... %s" %
+                                  (color.OKBLUE, deviceName, color.END))
+                            if args.verbose:
+                                print("%sSecret Key Found: %s \nSalt Found: %s %s" %
+                                      (color.OKBLUE, secret64, salt64, color.END))
+                            crack(secret64, salt64)
+                        except IOError:
+                            print("%sNo restriction hash found\n%s" %
+                                  (color.FAIL, color.END))
+                except OSError as e:
+                    print(
+                        "Unable to find backups with restrictions with passcode in %s" % bkup_dir)
+        else:
+            print(
+                "Unable to find backups in %s" % bkup_dir)
     except OSError as e:
         print("%sDirectory Not Found%s" % (color.FAIL, color.END))
 
@@ -126,9 +155,24 @@ def findHash(path):
 def findHashes(paths):
     for path in paths:
         findHash(path)
-    prompt()
+
+
+def main():
+    BACKUP_PATHS = [os.path.join(os.environ['HOME'], 'Library', 'Application Support', 'MobileSync', 'Backup/'),
+                    os.path.join(os.environ['HOME'], 'AppData', 'Roaming', 'Apple Computer', 'MobileSync', 'Backup\\'), os.path.join(os.path.dirname(__file__), "Backups/")]
+    try:
+        logo()
+        if args.automatically and not args.interactive:
+            findHashes(BACKUP_PATHS)
+        if args.interactive:
+            prompt()
+        if args.backup:
+            findHash(args.backup)
+        if not args.verbose and not args.automatically and not args.interactive and not args.backup:
+            parser.print_help()
+    except KeyboardInterrupt:
+        pass
 
 
 if __name__ == "__main__":
-    logo()
-    findHashes(BACKUP_PATHS)
+    main()

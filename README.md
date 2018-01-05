@@ -20,9 +20,26 @@ This version of the application is written in Python, which is used to crack the
 
 2. Run ioscrack.py
 
-  ```bash
-  python ioscrack.py
-  ```
+  `python ioscrack.py`
+
+## Usage
+
+```bash
+usage: ioscrack.py [-h] [-v] [-a] [-i] [-b folder]
+
+a script which is used to crack the restriction passcode of an iPhone/iPad
+through a flaw in unencrypted backups allowing the hash and salt to be
+discovered
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -v, --verbose         increase output verbosity
+  -a, --automatically   automatically finds and cracks hashes
+  -i, --interactive     prompts user for input
+  -b folder, --backup folder
+                        where backups are located
+```
+
 
 3. If ioscrack couldn't find your back up please try to [find it manually](https://github.com/thehappydinoa/iOSRestrictionBruteForce/wiki/Manually-find-restrictions-hash-and-salt)
 
