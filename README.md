@@ -19,13 +19,17 @@ This version of the application is written in Python, which is used to crack the
 
 1. Clone repository
 
-`git clone https://github.com/thehappydinoa/iOSRestrictionBruteForce && cd iOSRestrictionBruteForce`
+    `git clone https://github.com/thehappydinoa/iOSRestrictionBruteForce && cd iOSRestrictionBruteForce`
 
 2. Make sure to use iTunes to backup the iOS device to computer
 
-3. Run ioscrack.py
+3. Run `ioscrack.py` with automatic hash discovery option
 
-  `python ioscrack.py -a`
+    `python ioscrack.py -a`
+  
+4. If ioscrack couldn't find your back up please try to [find it manually](https://github.com/thehappydinoa/iOSRestrictionBruteForce/wiki/Manually-find-restrictions-hash-and-salt) then run `ioscrack.py` with interactive hash input option
+
+    `python ioscrack.py -i`
 
 ## Usage
 
@@ -44,9 +48,6 @@ optional arguments:
   -b folder, --backup folder
                         where backups are located
 ```
-
-
-3. If ioscrack couldn't find your back up please try to [find it manually](https://github.com/thehappydinoa/iOSRestrictionBruteForce/wiki/Manually-find-restrictions-hash-and-salt)
 
 ## DEPENDENCIES
 
