@@ -5,7 +5,7 @@
 
 This version of the application is written in Python, which is used to crack the restriction passcode of an iPhone/iPad takes advantage of a flaw in unencrypted backups allowing the hash and salt to be discovered.
 
-![Restriction Passcode](https://cdn.igeeksblog.com/wp-content/uploads/2016/10/Tap-on-Restrictions-in-iOS-10-on-iPhone.jpg)
+![Restriction Passcode](docs/ios-restrictions.jpeg)
 
 ## DEPENDENCIES
 
@@ -28,6 +28,8 @@ Requires [Passlib](https://passlib.readthedocs.io/en/stable/) Install with `pip 
 4. If ioscrack couldn't find your back up please try to [find it manually](https://github.com/thehappydinoa/iOSRestrictionBruteForce/wiki/Manually-find-restrictions-hash-and-salt) then run `ioscrack.py` with interactive hash input option
 
     `python ioscrack.py -i`
+
+![GIF](docs/ioscrack.gif)
 
 ## Usage
 
