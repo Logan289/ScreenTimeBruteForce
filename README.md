@@ -1,4 +1,4 @@
-# iOS Restriction Passcode Brute Force 
+# iOS Restriction Passcode Brute Force
 [![Python2.7](https://img.shields.io/badge/Python-2.7-orange.svg?style=flat-square)](https://www.python.org/downloads/release/python-2714/) ![OS](https://img.shields.io/badge/Works%20On-Linux%20|%20macOS%20|%20Windows%20-green.svg?style=flat-square) ![iOS](https://img.shields.io/badge/Tested%20On%20iOS-9.3.5%20|%2010.0.1%20|%2011.2.1-green.svg?style=flat-square)
 
 ## Overview
@@ -28,7 +28,7 @@ Requires [Passlib](https://passlib.readthedocs.io/en/stable/) Install with `pip 
     ```
     python ioscrack.py -a
     ```
-  
+
 4. If ioscrack couldn't find your back up please try to [find it manually](https://github.com/thehappydinoa/iOSRestrictionBruteForce/wiki/Manually-find-restrictions-hash-and-salt) then run `ioscrack.py` with interactive hash input option
 
     ```
@@ -64,6 +64,12 @@ Done by using the [pbkdf2](http://www.ietf.org/rfc/rfc2898.txt) hash with the Pa
 2. Trys birthdays between 1900-2017
 
 3. Brute force pins from 1 to 9999
+
+## How to Protect Against
+
+1. Encrpyt backups
+
+2. Backup only on trusted computers
 
 ## LICENSE
 

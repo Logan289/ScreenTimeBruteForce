@@ -82,7 +82,7 @@ def crack(secret64, salt64):
         key = "%04d" % (i)
         if check(secret64, salt64, key):
             duration = round(time() - start_t, 2)
-            print("%sPasscode is %s (very common) it took %s secconds %s" %
+            print("%sPasscode is %s (top 20 most common passcode) it took %s secconds %s" %
                   (color.NOTICE, key, duration, color.END))
             return key
     # Common birth dates
@@ -91,7 +91,7 @@ def crack(secret64, salt64):
         key = "%04d" % (i)
         if check(secret64, salt64, key):
             duration = round(time() - start_t, 2)
-            print("%sPasscode is %s it took %s secconds %s" %
+            print("%sPasscode is %s (common year) it took %s secconds %s" %
                   (color.NOTICE, key, duration, color.END))
             return key
     # Brute force all pins
