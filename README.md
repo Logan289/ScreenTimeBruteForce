@@ -73,7 +73,7 @@ Done by using the [pbkdf2](http://www.ietf.org/rfc/rfc2898.txt) hash with the Pa
 
 ## Acknowledgments
 
-- [yuejd](/yuejd)
+- [yuejd](https://GitHub.com/yuejd)
 
 ## LICENSE
 
