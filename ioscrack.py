@@ -46,6 +46,7 @@ class color:
     UNDERLINE = '\033[4m'
     LOGGING = '\33[34m'
 
+
 def disableColor():
     color.HEADER = ''
     color.IMPORTANT = ''
@@ -176,23 +177,18 @@ def findHash(path):
         print("%sDirectory Not Found%s" % (color.FAIL, color.END))
 
 
-def findHashes(paths):
-    for path in paths:
-        findHash(path)
-
-
 def main():
     if "nt" in os.name:
         disableColor()
-        BACKUP_PATHS = [os.path.join(os.environ['USERPROFILE'], 'AppData', 'Roaming', 'Apple Computer',
-                                     'MobileSync', 'Backup\\'), os.path.join(os.path.dirname(__file__), "Backups/")]
+        BACKUP_PATHS = os.path.join(
+            os.environ['USERPROFILE'], 'AppData', 'Roaming', 'Apple Computer', 'MobileSync', 'Backup\\')
     else:
-        BACKUP_PATHS = [os.path.join(os.environ['HOME'], 'Library', 'Application Support',
-                                     'MobileSync', 'Backup/'), os.path.join(os.path.dirname(__file__), "Backups/")]
+        BACKUP_PATHS = os.path.join(
+            os.environ['HOME'], 'Library', 'Application Support', 'MobileSync', 'Backup/')
     try:
         logo()
         if args.automatically and not args.interactive:
-            findHashes(BACKUP_PATHS)
+            findHash(BACKUP_PATHS)
         if args.interactive:
             prompt()
         if args.backup:
