@@ -61,4 +61,4 @@ Done by using the pbkdf2-hmac-sha1 hash with the Passlib python module
 
 ## LICENSE
 
-MIT License
+[MIT License](LICENSE)
