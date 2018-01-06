@@ -24,7 +24,7 @@ Requires [Passlib](https://passlib.readthedocs.io/en/stable/) Install with `pip 
 3. Run `ioscrack.py` with automatic hash discovery option
 
     `python ioscrack.py -a`
-  
+
 4. If ioscrack couldn't find your back up please try to [find it manually](https://github.com/thehappydinoa/iOSRestrictionBruteForce/wiki/Manually-find-restrictions-hash-and-salt) then run `ioscrack.py` with interactive hash input option
 
     `python ioscrack.py -i`
