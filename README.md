@@ -17,17 +17,23 @@ Requires [Passlib](https://passlib.readthedocs.io/en/stable/) Install with `pip 
 
 1. Clone repository
 
-    `git clone https://github.com/thehappydinoa/iOSRestrictionBruteForce && cd iOSRestrictionBruteForce`
+    ```bash
+    git clone https://github.com/thehappydinoa/iOSRestrictionBruteForce && cd iOSRestrictionBruteForce
+    ```
 
 2. Make sure to use [iTunes](https://www.apple.com/itunes/download/) or [libimobiledevice](https://github.com/libimobiledevice/libimobiledevice) to backup the iOS device to computer
 
 3. Run `ioscrack.py` with automatic hash discovery option
 
-    `python ioscrack.py -a`
-
+    ```
+    python ioscrack.py -a
+    ```
+  
 4. If ioscrack couldn't find your back up please try to [find it manually](https://github.com/thehappydinoa/iOSRestrictionBruteForce/wiki/Manually-find-restrictions-hash-and-salt) then run `ioscrack.py` with interactive hash input option
 
-    `python ioscrack.py -i`
+    ```
+    python ioscrack.py -i
+    ```
 
 ![GIF](docs/ioscrack.gif)
 
@@ -51,7 +57,7 @@ optional arguments:
 
 ## How It Works
 
-Done by using the pbkdf2-hmac-sha1 hash with the Passlib python module
+Done by using the [pbkdf2](http://www.ietf.org/rfc/rfc2898.txt) hash with the Passlib python module
 
 1. Trys the [top 20 four-digit](http://www.datagenetics.com/blog/september32012/index.html) pins
 
