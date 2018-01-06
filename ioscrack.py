@@ -121,6 +121,22 @@ def prompt():
     crack(secret64, salt64)
 
 
+def findSecretKeySalt(path, deviceName):
+    try:
+        passfile = open(path, "r")
+        line_list = passfile.readlines()
+        secret64 = line_list[6][1:29]
+        salt64 = line_list[10][1:9]
+        print("%sCracking restrictions passcode for %s... %s" %
+              (color.OKBLUE, deviceName, color.END))
+        if args.verbose:
+            print("%sSecret Key Found: %s \nSalt Found: %s %s" %
+                  (color.OKBLUE, secret64, salt64, color.END))
+        crack(secret64, salt64)
+    except IOError:
+        pass
+
+
 def findHash(path):
     print("\n%sLooking for backups in %s..." % (color.OKBLUE, path)),
     try:
@@ -142,34 +158,10 @@ def findHash(path):
                                       (color.OKGREEN, bkup_dir, color.END))
                         except:
                             break
-                        try:
-                            passfile = open(path + bkup_dir +
-                                            "/398bc9c2aeeab4cb0c12ada0f52eea12cf14f40b", "r")
-                            line_list = passfile.readlines()
-                            secret64 = line_list[6][1:29]
-                            salt64 = line_list[10][1:9]
-                            print("%sCracking restrictions passcode for %s... %s" %
-                                  (color.OKBLUE, deviceName, color.END))
-                            if args.verbose:
-                                print("%sSecret Key Found: %s \nSalt Found: %s %s" %
-                                      (color.OKBLUE, secret64, salt64, color.END))
-                            crack(secret64, salt64)
-                        except IOError:
-                            try:
-                                passfile = open(path + bkup_dir +
-                                                "/39/398bc9c2aeeab4cb0c12ada0f52eea12cf14f40b", "r")
-                                line_list = passfile.readlines()
-                                secret64 = line_list[6][1:29]
-                                salt64 = line_list[10][1:9]
-                                print("%sCracking restrictions passcode for %s... %s" %
-                                      (color.OKBLUE, deviceName, color.END))
-                                if args.verbose:
-                                    print("%sSecret Key Found: %s \nSalt Found: %s %s" %
-                                          (color.OKBLUE, secret64, salt64, color.END))
-                                crack(secret64, salt64)
-                            except IOError:
-                                print("%sNo restriction hash found\n%s" %
-                                      (color.FAIL, color.END))
+                        findSecretKeySalt(
+                            path + bkup_dir + "/398bc9c2aeeab4cb0c12ada0f52eea12cf14f40b", deviceName)
+                        findSecretKeySalt(
+                            path + bkup_dir + "/39/398bc9c2aeeab4cb0c12ada0f52eea12cf14f40b", deviceName)
                 except OSError as e:
                     print(
                         "Unable to find backups with restrictions with passcode in %s" % bkup_dir)
