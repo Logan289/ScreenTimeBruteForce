@@ -147,15 +147,19 @@ def findHash(path):
                 try:
                     INFOPATH = path + bkup_dir + "/Info.plist"
                     if os.path.isfile(INFOPATH):
-                        pl = readPlist(INFOPATH)
+                        info = readPlist(INFOPATH)
                         try:
-                            deviceName = pl['Device Name']
-                            lastBackupDate = pl['Last Backup Date']
+                            deviceName = info['Device Name']
+                            lastBackupDate = info['Last Backup Date']
+                            model = info['Product Type']
+                            UDID = info['Unique Identifier']
+                            iOS = info['Product Version']
+                            targetType = info['Target Type']
                             print('\n%sFound Backup for %s as of %s %s' %
                                   (color.OKGREEN, deviceName, str(lastBackupDate), color.END))
                             if args.verbose:
-                                print("%sUDID: %s %s" %
-                                      (color.OKGREEN, bkup_dir, color.END))
+                                print("%sUDID: %s \n%s: %s running iOS %s %s" %
+                                      (color.OKGREEN, UDID, targetType, model, iOS, color.END))
                         except:
                             break
                         findSecretKeySalt(
@@ -191,6 +195,7 @@ def main():
         if not args.verbose and not args.automatically and not args.interactive and not args.backup:
             parser.print_help()
     except KeyboardInterrupt:
+        print("Exiting...\r"),
         pass
 
 
