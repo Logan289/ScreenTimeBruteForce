@@ -71,9 +71,26 @@ Done by using the [pbkdf2](http://www.ietf.org/rfc/rfc2898.txt) hash with the Pa
 
 2. Backup only on trusted computers
 
+## Contributing
+
+Best ways to contribute
+* Star it on GitHub - if you use it and like it please at least star it :)
+* [Promote](#promotion)
+* Open [issues](https://github.com/thehappydinoa/iOSRestrictionBruteForce/issues)
+* Submit fixes and/or improvements with [Pull Requests](http://makeapullrequest.com)
+
+## Promotion
+
+Like the project? Please support to ensure continued development going forward:
+* Star this repo on [GitHub](action:files#disambiguate)
+* Follow me
+  * [Twitter](https://twitter.com/thehappydinoa)
+  * [GitHub](https://github.com/thehappydinoa)
+
+
 ## Acknowledgments
 
-- [yuejd](https://GitHub.com/yuejd)
+- [yuejd](https://github.com/yuejd)
 
 ## LICENSE
 
