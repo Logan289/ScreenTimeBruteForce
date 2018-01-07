@@ -1,0 +1,3 @@
+Flask==0.12.2
+WTForms==2.1
+Passlib==1.7.1

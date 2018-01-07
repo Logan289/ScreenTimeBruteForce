@@ -1,0 +1,19 @@
+{% extends 'layout.html' %}
+{% block body %}
+<h1>iTunes Backups <small>{{numDevices}} Devices</small></h1>
+<a class="btn btn-success" href="{{url_for('iTunesCrack')}}"><i class="fa fa-code" aria-hidden="true"></i> Crack</a>
+<hr />
+<table class="table table-striped">
+  <tr>
+    <th>Name</th>
+    <th>UDID </th>
+    <th></th>
+  </tr>
+  {% for device in devices %}
+    <tr>
+      <td><a href="{{url_for('deviceInfo', UDID=device.UDID)}}">{{device.name}}</a></td>
+      <td>{{device.UDID}}</td>
+    </tr>
+  {% endfor %}
+</table>
+{% endblock %}

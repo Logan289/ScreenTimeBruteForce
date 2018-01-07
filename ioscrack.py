@@ -1,17 +1,122 @@
 #!/usr/bin/python2
 
+from flask import Flask, render_template, url_for, session, request, flash, redirect
+from wtforms import Form, StringField, TextAreaField, validators, ValidationError
 from datetime import datetime
 from passlib.utils.pbkdf2 import pbkdf2
 from plistlib import readPlist
 from base64 import b64decode
 from time import time
+import webbrowser
 import argparse
-import os
 import os.path
+import os
+
+if "nt" in os.name:
+    disableColor()
+    BACKUP_PATHS = os.path.join(
+        os.environ['USERPROFILE'], 'AppData', 'Roaming', 'Apple Computer', 'MobileSync', 'Backup\\')
+else:
+    BACKUP_PATHS = os.path.join(
+        os.environ['HOME'], 'Library', 'Application Support', 'MobileSync', 'Backup/')
+
+# iDevice Object
+
+
+class idevice():
+    def __init__(self, path):
+        if os.path.isdir(path):
+            self.path = path
+        else:
+            raise ValueError("%s is not a valid directory" % path)
+        INFOPATH = path + "/Info.plist"
+        if os.path.isfile(INFOPATH):
+            self.info = readPlist(INFOPATH)
+            self.name = self.info['Display Name']
+            self.lastBackupDate = self.info['Last Backup Date']
+            self.model = self.info['Product Type']
+            self.UDID = self.info['Unique Identifier'].lower()
+            self.iOS = self.info['Product Version']
+            self.targetType = self.info['Target Type']
+            self.findSecretKeySalt()
+        else:
+            raise ValueError("%s does not appear to contain a backup" % path)
+
+    def findSecretKeySalt(self):
+        restrictionsFile = "/398bc9c2aeeab4cb0c12ada0f52eea12cf14f40b"
+        try:
+            passfile = open(self.path + restrictionsFile, "r")
+            line_list = passfile.readlines()
+            self.secret64 = line_list[6][1:29]
+            self.salt64 = line_list[10][1:9]
+        except IOError:
+            try:
+                passfile = open(self.path + "/39" + restrictionsFile, "r")
+                line_list = passfile.readlines()
+                self.secret64 = line_list[6][1:29]
+                self.salt64 = line_list[10][1:9]
+            except IOError:
+                raise ValueError(
+                    "%s does not have a restrictions file" % self.path)
+
+    def crack(self):
+        self.pin = crack(self.secret64, self.salt64)
+        return self.pin
+
+
+# Flask Classes, Definitions, and Routes
+app = Flask(__name__)
+app.secret_key = os.urandom(24)
+
+
+class crackForm(Form):
+    restrictionsPasswordKey = StringField(
+        'Restrictions Key', [validators.Length(min=26, max=32)], default="r3JS9BgcHea1hxFIeAAR7z0Il2w=")
+    restrictionsPasswordSalt = StringField(
+        'Restrictions Salt', [validators.Length(min=6, max=10)], default="osz+8g==")
+
+
+@app.route('/input', methods=['GET', 'POST'])
+def input():
+    form = crackForm(request.form)
+
+    if request.method == 'POST' and form.validate():
+        restrictionsPasswordKey = str(form.restrictionsPasswordKey.data)
+        restrictionsPasswordSalt = str(form.restrictionsPasswordSalt.data)
+        pin = crack(restrictionsPasswordKey, restrictionsPasswordSalt)
+        if pin:
+            return render_template('results.html', pin=pin)
+        else:
+            flash("Invalid Key/Salt", 'danger')
+            return redirect(url_for('index'))
+    else:
+        return render_template('form.html', form=form)
+
+
+@app.route('/')
+def itunes():
+    devices = findHashes(BACKUP_PATHS)
+    return render_template('itunes.html', devices=devices, numDevices=len(devices))
+
+
+@app.route('/crack')
+def iTunesCrack():
+    devices = findHashes(BACKUP_PATHS)
+    crackHashes(devices)
+    return render_template('results.html', devices=devices, numDevices=len(devices))
+
+
+@app.route('/<string:UDID>')
+def deviceInfo(UDID):
+    device = idevice(BACKUP_PATHS + UDID.lower())
+    device.crack()
+    return render_template('results.html', device=device)
+
+# Argparse Resources
 
 
 def is_folder(parser, path):
-    if not os.path.exists(path):
+    if not os.path.isdir(path):
         parser.error("The folder %s does not exist!" % path)
     else:
         if path.endswith('/'):
@@ -20,18 +125,22 @@ def is_folder(parser, path):
             return path + '/'
 
 
-parser = argparse.ArgumentParser(
-    description="a script which is used to crack the restriction passcode of an iPhone/iPad through a flaw in unencrypted backups allowing the hash and salt to be discovered")
+parser = argparse.ArgumentParser(prog="iOSCrack.py",
+                                 description="a script which is used to crack the restriction passcode of an iPhone/iPad through a flaw in unencrypted backups allowing the hash and salt to be discovered")
 parser.add_argument("-v", "--verbose", help="increase output verbosity",
                     action="store_true")
 parser.add_argument("-a", "--automatically", help="automatically finds and cracks hashes",
                     action="store_true")
-parser.add_argument("-i", "--interactive", help="prompts user for input",
+parser.add_argument("-c", "--cli", help="prompts user for input",
+                    action="store_true")
+parser.add_argument("-w", "--webserver", help="creates webserver running flask",
                     action="store_true")
 parser.add_argument("-b", "--backup", help="where backups are located", metavar="folder",
                     type=lambda x: is_folder(parser, x))
 
 args = parser.parse_args()
+
+# Color Class
 
 
 class color:
@@ -59,6 +168,8 @@ def disableColor():
     color.UNDERLINE = ''
     color.LOGGING = ''
 
+# Logo
+
 
 def logo():
     print("%s\n iOSRestrictionBruteForce" % color.HEADER)
@@ -78,30 +189,30 @@ def crack(secret64, salt64):
     start_t = time()
     # Top 20 common pins
     for i in COMMON_KEYS:
-        print("Trying: %s \r" % i),
+        print("%sTrying: %s \r" % (color.NOTICE, i)),
         key = "%04d" % (i)
         if check(secret64, salt64, key):
             duration = round(time() - start_t, 2)
-            print("%sPasscode is %s (top 20 most common passcode) it took %s secconds %s" %
-                  (color.NOTICE, key, duration, color.END))
+            print("Passcode is %s (top 20 most common passcode) %s\n" %
+                  (key, color.END))
             return key
     # Common birth dates
     for i in range(1900, 2017):
-        print("Trying: %s \r" % i),
+        print("%sTrying: %s \r" % (color.NOTICE, i)),
         key = "%04d" % (i)
         if check(secret64, salt64, key):
             duration = round(time() - start_t, 2)
-            print("%sPasscode is %s (common year) it took %s secconds %s" %
-                  (color.NOTICE, key, duration, color.END))
+            print("Passcode is %s (common year) it took %s secconds %s\n" %
+                  (key, duration, color.END))
             return key
     # Brute force all pins
     for i in range(10000):
         key = "%04d" % (i)
-        print("Trying: %s \r" % key),
+        print("%sTrying: %s \r" % (color.NOTICE, key)),
         if check(secret64, salt64, key):
             duration = round(time() - start_t, 2)
-            print("%sPasscode is %s it took %s secconds %s" %
-                  (color.NOTICE, key, duration, color.END))
+            print("Passcode is %s it took %s secconds %s\n" %
+                  (key, duration, color.END))
             return key
     print("%sInvalid Key and/or Salt %s" %
           (color.FAIL, color.END))
@@ -121,23 +232,18 @@ def prompt():
     crack(secret64, salt64)
 
 
-def findSecretKeySalt(path, deviceName):
-    try:
-        passfile = open(path, "r")
-        line_list = passfile.readlines()
-        secret64 = line_list[6][1:29]
-        salt64 = line_list[10][1:9]
-        print("%sCracking restrictions passcode for %s... %s" %
-              (color.OKBLUE, deviceName, color.END))
+def crackHashes(devices):
+    for device in devices:
         if args.verbose:
-            print("%sSecret Key Found: %s \nSalt Found: %s %s" %
-                  (color.OKBLUE, secret64, salt64, color.END))
-        crack(secret64, salt64)
-    except IOError:
-        pass
+            print("%sUDID: %s \n%s: %s running iOS %s %s" %
+                  (color.OKGREEN, device.UDID, device.targetType, device.model, device.iOS, color.END))
+        print("%sCracking restrictions passcode for %s... %s" %
+              (color.OKBLUE, device.name, color.END))
+        device.crack()
 
 
-def findHash(path):
+def findHashes(path):
+    devices = []
     print("\n%sLooking for backups in %s..." % (color.OKBLUE, path)),
     try:
         backup_dir = os.listdir(path)
@@ -145,30 +251,11 @@ def findHash(path):
             print("%sDirectory Found %s" % (color.OKGREEN, color.END))
             for bkup_dir in backup_dir:
                 try:
-                    INFOPATH = path + bkup_dir + "/Info.plist"
-                    if os.path.isfile(INFOPATH):
-                        info = readPlist(INFOPATH)
-                        try:
-                            deviceName = info['Device Name']
-                            lastBackupDate = info['Last Backup Date']
-                            model = info['Product Type']
-                            UDID = info['Unique Identifier']
-                            iOS = info['Product Version']
-                            targetType = info['Target Type']
-                            print('\n%sFound Backup for %s as of %s %s' %
-                                  (color.OKGREEN, deviceName, str(lastBackupDate), color.END))
-                            if args.verbose:
-                                print("%sUDID: %s \n%s: %s running iOS %s %s" %
-                                      (color.OKGREEN, UDID, targetType, model, iOS, color.END))
-                        except:
-                            break
-                        findSecretKeySalt(
-                            path + bkup_dir + "/398bc9c2aeeab4cb0c12ada0f52eea12cf14f40b", deviceName)
-                        findSecretKeySalt(
-                            path + bkup_dir + "/39/398bc9c2aeeab4cb0c12ada0f52eea12cf14f40b", deviceName)
-                except OSError as e:
-                    print(
-                        "Unable to find backups with restrictions with passcode in %s" % bkup_dir)
+                    device = idevice(path + bkup_dir)
+                    devices.append(device)
+                except ValueError as e:
+                    print(str(e))
+            return devices
         else:
             print(
                 "Unable to find backups in %s" % bkup_dir)
@@ -177,22 +264,18 @@ def findHash(path):
 
 
 def main():
-    if "nt" in os.name:
-        disableColor()
-        BACKUP_PATHS = os.path.join(
-            os.environ['USERPROFILE'], 'AppData', 'Roaming', 'Apple Computer', 'MobileSync', 'Backup\\')
-    else:
-        BACKUP_PATHS = os.path.join(
-            os.environ['HOME'], 'Library', 'Application Support', 'MobileSync', 'Backup/')
     try:
         logo()
-        if args.automatically and not args.interactive:
-            findHash(BACKUP_PATHS)
-        if args.interactive:
+        if args.automatically and not args.cli:
+            crackHashes(findHashes(BACKUP_PATHS))
+        if args.cli:
             prompt()
         if args.backup:
-            findHash(args.backup)
-        if not args.verbose and not args.automatically and not args.interactive and not args.backup:
+            findHashes(args.backup)
+        if args.webserver:
+            webbrowser.open('http://127.0.0.1:8080/')
+            app.run(port=8080, debug=True, use_reloader=False)
+        if not args.verbose and not args.automatically and not args.cli and not args.backup:
             parser.print_help()
     except KeyboardInterrupt:
         print("Exiting...\r"),

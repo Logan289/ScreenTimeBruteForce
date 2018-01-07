@@ -1,0 +1,34 @@
+{% extends 'layout.html' %}
+{% block body %}
+{% if pin %}
+<div class="jumbotron text-center">
+    <h2>The passcode is <b>{{pin}}</b></h2>
+</div>
+{% endif %}
+{% if devices %}
+<h1>iTunes Backups <small>{{numDevices}} Devices</small></h1>
+<table class="table table-striped">
+    <tr>
+        <th>Name</th>
+        <th>Pin</th>
+    </tr>
+    {% for device in devices %}
+    <tr>
+        <td><a href="{{url_for('deviceInfo', UDID=device.UDID)}}">{{device.name}}</a></td>
+        <td>{{device.pin}}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endif %}
+{% if device %}
+<div class="jumbotron text-center">
+    <h2>The passcode for {{device.name}} is <b>{{device.pin}}</b></h2>
+</div>
+<h4><ul type="square">
+    <li>UDID: {{device.UDID}}</li>
+    <li>Last Backup Completed: {{device.lastBackupDate}}</li>
+    <li>Model: {{device.model}}</li>
+    <li>iOS: {{device.iOS}}</li>
+</ul></h4>
+{% endif %}
+{% endblock %}

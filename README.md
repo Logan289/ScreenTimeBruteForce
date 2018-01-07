@@ -23,16 +23,10 @@ Requires [Passlib](https://passlib.readthedocs.io/en/stable/) Install with `pip 
 
 2. Make sure to use [iTunes](https://www.apple.com/itunes/download/) or [libimobiledevice](https://github.com/libimobiledevice/libimobiledevice) to backup the iOS device to computer
 
-3. Run `ioscrack.py` with automatic hash discovery option
+3. Run `ioscrack.py` with the webserver option
 
     ```
-    python ioscrack.py -a
-    ```
-
-4. If ioscrack couldn't find your back up please try to [find it manually](https://github.com/thehappydinoa/iOSRestrictionBruteForce/wiki/Manually-find-restrictions-hash-and-salt) then run `ioscrack.py` with interactive hash input option
-
-    ```
-    python ioscrack.py -i
+    python ioscrack.py -w
     ```
 
 ![GIF](docs/ioscrack.gif)
@@ -40,7 +34,7 @@ Requires [Passlib](https://passlib.readthedocs.io/en/stable/) Install with `pip 
 ## Usage
 
 ```bash
-usage: ioscrack.py [-h] [-v] [-a] [-i] [-b folder]
+usage: iOSCrack.py [-h] [-v] [-a] [-c] [-w] [-b folder]
 
 a script which is used to crack the restriction passcode of an iPhone/iPad
 through a flaw in unencrypted backups allowing the hash and salt to be
@@ -50,7 +44,8 @@ optional arguments:
   -h, --help            show this help message and exit
   -v, --verbose         increase output verbosity
   -a, --automatically   automatically finds and cracks hashes
-  -i, --interactive     prompts user for input
+  -c, --cli             prompts user for input
+  -w, --webserver       creates webserver running flask
   -b folder, --backup folder
                         where backups are located
 ```
