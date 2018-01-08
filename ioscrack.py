@@ -99,7 +99,7 @@ def input():
 def itunes():
     path = BACKUP_PATHS
     devices = findHashes(path)
-    return render_template('itunes.html', devices=devices, numDevices=len(devices), path=path)
+    return render_template('itunes.html', devices=devices, numDevices=len(devices))
 
 
 @app.route('/crack')
