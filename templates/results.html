@@ -6,7 +6,7 @@
 </div>
 {% endif %}
 {% if devices %}
-<h1>iTunes Backups <small>{{numDevices}} Devices</small></h1>
+<h1>Backups <small>{{numDevices}} Devices</small></h1>
 <table class="table table-striped">
     <tr>
         <th>Name</th>
@@ -15,14 +15,14 @@
     {% for device in devices %}
     <tr>
         <td><a href="{{url_for('deviceInfo', UDID=device.UDID)}}">{{device.name}}</a></td>
-        <td>{{device.pin}}</td>
+        <td>{{session[device.UDID]}}</td>
     </tr>
     {% endfor %}
 </table>
 {% endif %}
 {% if device %}
 <div class="jumbotron text-center">
-    <h2>The passcode for {{device.name}} is <b>{{device.pin}}</b></h2>
+    <h2>The passcode for {{device.name}} is <b>{{session[device.UDID]}}</b></h2>
 </div>
 <h4><ul type="square">
     <li>UDID: {{device.UDID}}</li>

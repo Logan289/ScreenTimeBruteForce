@@ -1,18 +1,19 @@
 {% extends 'layout.html' %}
 {% block body %}
-<h1>iTunes Backups <small>{{numDevices}} Devices</small></h1>
-<a class="btn btn-success" href="{{url_for('iTunesCrack')}}"><i class="fa fa-code" aria-hidden="true"></i> Crack</a>
+<h1>Backups <small>{{numDevices}} Devices <small>{{path}}</small></small></h1>
+<a class="btn btn-success" href="{{url_for('iTunesCrack')}}"><i class="fa fa-code" aria-hidden="true"></i> Crack All</a>
 <hr />
 <table class="table table-striped">
   <tr>
     <th>Name</th>
     <th>UDID </th>
-    <th></th>
+    <th>Pin</th>
   </tr>
   {% for device in devices %}
     <tr>
       <td><a href="{{url_for('deviceInfo', UDID=device.UDID)}}">{{device.name}}</a></td>
       <td>{{device.UDID}}</td>
+      <td>{% if session[device.UDID] %}{{session[device.UDID]}}{% else %}Not Found{% endif %}</td>
     </tr>
   {% endfor %}
 </table>

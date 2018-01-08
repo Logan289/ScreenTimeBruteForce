@@ -61,6 +61,8 @@ class idevice():
 
     def crack(self):
         self.pin = crack(self.secret64, self.salt64)
+        if args.webserver:
+            session[self.UDID] = self.pin
         return self.pin
 
 
@@ -95,8 +97,9 @@ def input():
 
 @app.route('/')
 def itunes():
-    devices = findHashes(BACKUP_PATHS)
-    return render_template('itunes.html', devices=devices, numDevices=len(devices))
+    path = BACKUP_PATHS
+    devices = findHashes(path)
+    return render_template('itunes.html', devices=devices, numDevices=len(devices), path=path)
 
 
 @app.route('/crack')
@@ -108,9 +111,14 @@ def iTunesCrack():
 
 @app.route('/<string:UDID>')
 def deviceInfo(UDID):
-    device = idevice(BACKUP_PATHS + UDID.lower())
-    device.crack()
-    return render_template('results.html', device=device)
+    try:
+        pin = session[UDID]
+        device = idevice(BACKUP_PATHS + UDID.lower())
+        return render_template('results.html', device=device)
+    except:
+        device = idevice(BACKUP_PATHS + UDID.lower())
+        device.crack()
+        return render_template('results.html', device=device)
 
 # Argparse Resources
 
@@ -239,12 +247,17 @@ def crackHashes(devices):
                   (color.OKGREEN, device.UDID, device.targetType, device.model, device.iOS, color.END))
         print("%sCracking restrictions passcode for %s... %s" %
               (color.OKBLUE, device.name, color.END))
-        device.crack()
+        try:
+            pin = session[device.UDID]
+        except:
+            device.crack()
 
 
 def findHashes(path):
     devices = []
     print("\n%sLooking for backups in %s..." % (color.OKBLUE, path)),
+    if not path.endswith('/'):
+        path = path + '/'
     try:
         backup_dir = os.listdir(path)
         if len(backup_dir) > 0:
