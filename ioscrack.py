@@ -12,6 +12,35 @@ import argparse
 import os.path
 import os
 
+# Color Class
+
+
+class color:
+    HEADER = '\033[95m'
+    IMPORTANT = '\33[35m'
+    NOTICE = '\033[33m'
+    OKBLUE = '\033[94m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    END = '\033[0m'
+    UNDERLINE = '\033[4m'
+    LOGGING = '\33[34m'
+
+
+def disableColor():
+    color.HEADER = ''
+    color.IMPORTANT = ''
+    color.NOTICE = ''
+    color.OKBLUE = ''
+    color.OKGREEN = ''
+    color.WARNING = ''
+    color.FAIL = ''
+    color.END = ''
+    color.UNDERLINE = ''
+    color.LOGGING = ''
+
+
 if "nt" in os.name:
     disableColor()
     BACKUP_PATHS = os.path.join(
@@ -147,34 +176,6 @@ parser.add_argument("-b", "--backup", help="where backups are located", metavar=
                     type=lambda x: is_folder(parser, x))
 
 args = parser.parse_args()
-
-# Color Class
-
-
-class color:
-    HEADER = '\033[95m'
-    IMPORTANT = '\33[35m'
-    NOTICE = '\033[33m'
-    OKBLUE = '\033[94m'
-    OKGREEN = '\033[92m'
-    WARNING = '\033[93m'
-    FAIL = '\033[91m'
-    END = '\033[0m'
-    UNDERLINE = '\033[4m'
-    LOGGING = '\33[34m'
-
-
-def disableColor():
-    color.HEADER = ''
-    color.IMPORTANT = ''
-    color.NOTICE = ''
-    color.OKBLUE = ''
-    color.OKGREEN = ''
-    color.WARNING = ''
-    color.FAIL = ''
-    color.END = ''
-    color.UNDERLINE = ''
-    color.LOGGING = ''
 
 # Logo
 
