@@ -2,10 +2,10 @@
 
 from flask import Flask, render_template, url_for, session, request, flash, redirect
 from wtforms import Form, StringField, TextAreaField, validators, ValidationError
-from datetime import datetime
 from passlib.utils.pbkdf2 import pbkdf2
-from plistlib import readPlist
 from base64 import b64decode
+from datetime import datetime
+from plistlib import readPlist
 from time import time
 import webbrowser
 import argparse
