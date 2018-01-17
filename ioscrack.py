@@ -89,6 +89,7 @@ class idevice():
     def crack(self):
         self.pin = crack(self.secret64, self.salt64)
         if args.webserver:
+            from flask import session
             session[self.UDID] = self.pin
         return self.pin
 
