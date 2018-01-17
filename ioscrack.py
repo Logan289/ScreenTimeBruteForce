@@ -1,7 +1,5 @@
 #!/usr/bin/python2
 
-from flask import Flask, render_template, url_for, session, request, flash, redirect
-from wtforms import Form, StringField, TextAreaField, validators, ValidationError
 from passlib.utils.pbkdf2 import pbkdf2
 from base64 import b64decode
 from datetime import datetime
@@ -95,59 +93,64 @@ class idevice():
         return self.pin
 
 
-# Flask Classes, Definitions, and Routes
-app = Flask(__name__)
-app.secret_key = os.urandom(24)
+def flask_setup():
+    from flask import Flask, render_template, url_for, session, request, flash, redirect
+    from wtforms import Form, StringField, TextAreaField, validators, ValidationError
+    # Flask Classes, Definitions, and Routes
+    app = Flask(__name__)
+    app.secret_key = os.urandom(24)
 
+    @app.route('/favicon.ico')
+    def favicon():
+        return redirect(url_for('static', filename='favicon.ico'))
 
-class crackForm(Form):
-    restrictionsPasswordKey = StringField(
-        'Restrictions Key', [validators.Length(min=26, max=32)], default="r3JS9BgcHea1hxFIeAAR7z0Il2w=")
-    restrictionsPasswordSalt = StringField(
-        'Restrictions Salt', [validators.Length(min=6, max=10)], default="osz+8g==")
+    @app.route('/')
+    def itunes():
+        path = BACKUP_PATHS
+        devices = findHashes(path)
+        return render_template('itunes.html', devices=devices, numDevices=len(devices))
 
+    @app.route('/crack')
+    def iTunesCrack():
+        devices = findHashes(BACKUP_PATHS)
+        crackHashes(devices)
+        return render_template('results.html', devices=devices, numDevices=len(devices))
 
-@app.route('/input', methods=['GET', 'POST'])
-def input():
-    form = crackForm(request.form)
+    @app.route('/<string:UDID>')
+    def deviceInfo(UDID):
+        try:
+            pin = session[UDID]
+            device = idevice(BACKUP_PATHS + UDID.lower())
+            return render_template('results.html', device=device)
+        except:
+            device = idevice(BACKUP_PATHS + UDID.lower())
+            device.crack()
+            return render_template('results.html', device=device)
 
-    if request.method == 'POST' and form.validate():
-        restrictionsPasswordKey = str(form.restrictionsPasswordKey.data)
-        restrictionsPasswordSalt = str(form.restrictionsPasswordSalt.data)
-        pin = crack(restrictionsPasswordKey, restrictionsPasswordSalt)
-        if pin:
-            return render_template('results.html', pin=pin)
+    class crackForm(Form):
+        restrictionsPasswordKey = StringField(
+            'Restrictions Key', [validators.Length(min=26, max=32)], default="r3JS9BgcHea1hxFIeAAR7z0Il2w=")
+        restrictionsPasswordSalt = StringField(
+            'Restrictions Salt', [validators.Length(min=6, max=10)], default="osz+8g==")
+
+    @app.route('/input', methods=['GET', 'POST'])
+    def input():
+        form = crackForm(request.form)
+
+        if request.method == 'POST' and form.validate():
+            restrictionsPasswordKey = str(form.restrictionsPasswordKey.data)
+            restrictionsPasswordSalt = str(form.restrictionsPasswordSalt.data)
+            pin = crack(restrictionsPasswordKey, restrictionsPasswordSalt)
+            if pin:
+                return render_template('results.html', pin=pin)
+            else:
+                flash("Invalid Key/Salt", 'danger')
+                return redirect(url_for('index'))
         else:
-            flash("Invalid Key/Salt", 'danger')
-            return redirect(url_for('index'))
-    else:
-        return render_template('form.html', form=form)
+            return render_template('form.html', form=form)
 
-
-@app.route('/')
-def itunes():
-    path = BACKUP_PATHS
-    devices = findHashes(path)
-    return render_template('itunes.html', devices=devices, numDevices=len(devices))
-
-
-@app.route('/crack')
-def iTunesCrack():
-    devices = findHashes(BACKUP_PATHS)
-    crackHashes(devices)
-    return render_template('results.html', devices=devices, numDevices=len(devices))
-
-
-@app.route('/<string:UDID>')
-def deviceInfo(UDID):
-    try:
-        pin = session[UDID]
-        device = idevice(BACKUP_PATHS + UDID.lower())
-        return render_template('results.html', device=device)
-    except:
-        device = idevice(BACKUP_PATHS + UDID.lower())
-        device.crack()
-        return render_template('results.html', device=device)
+    webbrowser.open('http://127.0.0.1:8080/')
+    app.run(port=8080, debug=True, use_reloader=False)
 
 # Argparse Resources
 
@@ -287,8 +290,7 @@ def main():
         if args.backup:
             findHashes(args.backup)
         if args.webserver:
-            webbrowser.open('http://127.0.0.1:8080/')
-            app.run(port=8080, debug=True, use_reloader=False)
+            flask_setup()
         if not args.verbose and not args.automatically and not args.cli and not args.backup:
             parser.print_help()
     except KeyboardInterrupt:
