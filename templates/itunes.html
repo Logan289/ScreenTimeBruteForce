@@ -1,20 +1,19 @@
-{% extends 'layout.html' %}
-{% block body %}
+{% extends 'layout.html' %} {% block body %}
 <h1><i class="fa fa-music" aria-hidden="true"></i> iTunes Backups <small>{{numDevices}} Devices</small></h1>
 <a class="btn btn-success" href="{{url_for('iTunesCrack')}}"><i class="fa fa-code" aria-hidden="true"></i> Crack All</a>
 <hr />
 <table class="table table-striped">
-  <tr>
-    <th>Name</th>
-    <th>UDID </th>
-    <th>Pin <i class="fa fa-unlock" aria-hidden="true"></i></th>
-  </tr>
-  {% for device in devices %}
     <tr>
-      <td><a href="{{url_for('deviceInfo', UDID=device.UDID)}}">{{device.name}}</a></td>
-      <td>{{device.UDID}}</td>
-      <td>{% if session[device.UDID] %}{{session[device.UDID]}}{% else %}Not Found{% endif %}</td>
+        <th>Name</th>
+        <th>UDID </th>
+        <th>Pin <i class="fa fa-unlock" aria-hidden="true"></i></th>
     </tr>
-  {% endfor %}
+    {% for device in devices %}
+    <tr>
+        <td><a href="{{url_for('deviceInfo', UDID=device.UDID)}}">{{device.name}}</a></td>
+        <td>{{device.UDID}}</td>
+        <td>{% if session[device.UDID] %}{{session[device.UDID]}}{% else %}Not Found{% endif %}</td>
+    </tr>
+    {% endfor %}
 </table>
 {% endblock %}

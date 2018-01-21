@@ -1,11 +1,8 @@
-{% extends 'layout.html' %}
-{% block body %}
-{% if pin %}
+{% extends 'layout.html' %} {% block body %} {% if pin %}
 <div class="jumbotron text-center">
     <h2>The passcode is <b>{{pin}}</b></h2>
 </div>
-{% endif %}
-{% if devices %}
+{% endif %} {% if devices %}
 <h1>Backups <small>{{numDevices}} Devices</small></h1>
 <table class="table table-striped">
     <tr>
@@ -19,8 +16,7 @@
     </tr>
     {% endfor %}
 </table>
-{% endif %}
-{% if device %}
+{% endif %} {% if device %}
 <div class="jumbotron text-center">
     <h2>The passcode for {{device.name}} is <b>{{session[device.UDID]}}</b></h2>
 </div>
@@ -29,6 +25,4 @@
     <li>Last Backup Completed: {{device.lastBackupDate}}</li>
     <li>Model: {{device.model}}</li>
     <li>iOS: {{device.iOS}}</li>
-</ul></h4>
-{% endif %}
-{% endblock %}
+</ul></h4> {% endif %} {% endblock %}

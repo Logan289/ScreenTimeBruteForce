@@ -1,11 +1,10 @@
-#!/usr/bin/python2
+#!/usr/bin/python
 
 from passlib.utils.pbkdf2 import pbkdf2
 from base64 import b64decode
 from datetime import datetime
 from plistlib import readPlist
 from time import time
-import webbrowser
 import argparse
 import os.path
 import os
@@ -84,7 +83,7 @@ class idevice():
                 self.salt64 = line_list[10][1:9]
             except IOError:
                 raise ValueError(
-                    "%s does not have a restrictions file" % self.path)
+                    "%s does not have a restrictions file or backup encrypted" % self.path)
 
     def crack(self):
         self.pin = crack(self.secret64, self.salt64)
@@ -95,6 +94,7 @@ class idevice():
 
 
 def flask_setup():
+    import webbrowser
     from flask import Flask, render_template, url_for, session, request, flash, redirect
     from wtforms import Form, StringField, TextAreaField, validators, ValidationError
     # Flask Classes, Definitions, and Routes
