@@ -23,6 +23,11 @@ class color:
     END = '\033[0m'
     UNDERLINE = '\033[4m'
     LOGGING = '\33[34m'
+    INFO = '\033[1;33m[!]\033[1;m '
+    QUE = '\033[1;34m[?]\033[1;m '
+    BAD = '\033[1;31m[-]\033[1;m '
+    GOOD = '\033[1;32m[+]\033[1;m '
+    RUN = '\033[1;97m[~]\033[1;m '
 
 
 def disableColor():
@@ -36,6 +41,11 @@ def disableColor():
     color.END = ''
     color.UNDERLINE = ''
     color.LOGGING = ''
+    color.INFO = '[!] '
+    color.QUE = '[?] '
+    color.BAD = '[-] '
+    color.GOOD = '[+] '
+    color.RUN = '[~] '
 
 
 if "nt" in os.name:
@@ -202,7 +212,7 @@ def crack(secret64, salt64):
     start_t = time()
     # Top 20 common pins
     for i in COMMON_KEYS:
-        print("%sTrying: %s \r" % (color.NOTICE, i)),
+        print("%s%sTrying: %s \r" % (color.RUN, color.NOTICE, i)),
         key = "%04d" % (i)
         if check(secret64, salt64, key):
             duration = round(time() - start_t, 2)
@@ -279,6 +289,7 @@ def findHashes(path):
                 "Unable to find backups in %s" % bkup_dir)
     except OSError as e:
         print("%sDirectory Not Found%s" % (color.FAIL, color.END))
+        return devices
 
 
 def main():
