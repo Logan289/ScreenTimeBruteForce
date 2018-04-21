@@ -2,7 +2,6 @@
 
 from passlib.utils.pbkdf2 import pbkdf2
 from base64 import b64decode
-from datetime import datetime
 from plistlib import readPlist
 from time import time
 import argparse
@@ -106,7 +105,7 @@ class idevice():
 def flask_setup():
     import webbrowser
     from flask import Flask, render_template, url_for, session, request, flash, redirect
-    from wtforms import Form, StringField, TextAreaField, validators, ValidationError
+    from wtforms import Form, StringField, validators, ValidationError
     # Flask Classes, Definitions, and Routes
     app = Flask(__name__)
     app.secret_key = os.urandom(24)
@@ -130,10 +129,9 @@ def flask_setup():
     @app.route('/<string:UDID>')
     def deviceInfo(UDID):
         try:
-            pin = session[UDID]
             device = idevice(BACKUP_PATHS + UDID.lower())
             return render_template('results.html', device=device)
-        except:
+        except Exception:
             device = idevice(BACKUP_PATHS + UDID.lower())
             device.crack()
             return render_template('results.html', device=device)
@@ -144,8 +142,8 @@ def flask_setup():
         restrictionsPasswordSalt = StringField(
             'Restrictions Salt', [validators.Length(min=6, max=10)], default="osz+8g==")
 
-    @app.route('/input', methods=['GET', 'POST'])
-    def input():
+    @app.route('/value', methods=['GET', 'POST'])
+    def value():
         form = crackForm(request.form)
 
         if request.method == 'POST' and form.validate():
@@ -307,7 +305,7 @@ def main():
             parser.print_help()
     except KeyboardInterrupt:
         print("Exiting...\r"),
-        pass
+        exit(0)
 
 
 if __name__ == "__main__":
