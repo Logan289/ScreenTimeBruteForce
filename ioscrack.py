@@ -105,7 +105,7 @@ class idevice():
 def flask_setup():
     import webbrowser
     from flask import Flask, render_template, url_for, session, request, flash, redirect
-    from wtforms import Form, StringField, validators, ValidationError
+    from wtforms import Form, StringField, validators
     # Flask Classes, Definitions, and Routes
     app = Flask(__name__)
     app.secret_key = os.urandom(24)
@@ -159,7 +159,7 @@ def flask_setup():
             return render_template('form.html', form=form)
 
     webbrowser.open('http://127.0.0.1:8080/')
-    app.run(port=8080, debug=True, use_reloader=False)
+    app.run(port=8080, use_reloader=False)
 
 # Argparse Resources
 
@@ -260,9 +260,7 @@ def crackHashes(devices):
                   (color.OKGREEN, device.UDID, device.targetType, device.model, device.iOS, color.END))
         print("%sCracking restrictions passcode for %s... %s" %
               (color.OKBLUE, device.name, color.END))
-        try:
-            pin = session[device.UDID]
-        except:
+        if not session[device.UDID]:
             device.crack()
 
 
