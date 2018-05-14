@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Applications</key>
+	<dict>
+	</dict>
+	<key>Build Version</key>
+	<string>13G36</string>
+	<key>Device Name</key>
+	<string>Xxxxx's iPhone</string>
+	<key>Display Name</key>
+	<string>Xxxxx's iPhone</string>
+	<key>GUID</key>
+	<string>XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX</string>
+	<key>IMEI</key>
+	<string>XXXXXXXXXXXXXXX</string>
+	<key>Installed Applications</key>
+	<array>
+	</array>
+	<key>Last Backup Date</key>
+	<date>2018-01-01T00:01:00Z</date>
+	<key>MEID</key>
+	<string>XXXXXXXXXXXXXX</string>
+	<key>Product Type</key>
+	<string>iPhone4,1</string>
+	<key>Product Version</key>
+	<string>9.3.5</string>
+	<key>Serial Number</key>
+	<string>XXXXXXXXXXXX</string>
+	<key>Target Identifier</key>
+	<string>XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX</string>
+	<key>Target Type</key>
+	<string>Device</string>
+	<key>Unique Identifier</key>
+	<string>device2</string>
+</dict>
+</plist>
