@@ -32,7 +32,7 @@ class iDevice():
                 passfile = open(self.path + restrictionsFile, "r")
         except IOError:
             if not newPath:
-                return self.findSecretKeySalt(newPath=(not newPath))
+                passfile = self.findSecretKeySalt(newPath=(not newPath))
         try:
             line_list = passfile.readlines()
             self.secret64 = line_list[6][1:29]
