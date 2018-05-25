@@ -43,13 +43,15 @@ def print_key(key, message=None, start_t=None):
 def crack(secret64, salt64):
     secret64 = secret64.strip()
     salt64 = salt64.strip()
+    start_t = time()
     inDB = keyExists(secret64, salt64)
     # inDB = False
     if inDB:
-        key = inDB[0]
-        print_key(key, message="in database")
-        return key
-    start_t = time()
+        i = inDB[0]
+        key = tryPinInRange(secret64=secret64, salt64=salt64, start_t=start_t,
+                            list=[i], message="in database")
+        if key:
+            return key
     # Top 20 common pins
     key = tryPinInRange(secret64=secret64, salt64=salt64, start_t=start_t,
                         list=COMMON_KEYS, message="top 20 common pins")
@@ -73,16 +75,19 @@ def tryPinInRange(**kwargs):
     start = kwargs.get("start")
     stop = kwargs.get("stop")
     list = kwargs.get("list")
-    start_t = kwargs.get("start_t")
-    secret64 = kwargs.get("secret64")
-    salt64 = kwargs.get("salt64")
-    message = kwargs.get("message")
     if start and stop:
         rangeArgs = (start, stop)
     elif stop:
         rangeArgs = (stop, )
     elif list:
         rangeArgs = (len(list),)
+    else:
+        return
+
+    start_t = kwargs.get("start_t")
+    secret64 = kwargs.get("secret64")
+    salt64 = kwargs.get("salt64")
+    message = kwargs.get("message")
 
     for i in range(*rangeArgs):
         if list:

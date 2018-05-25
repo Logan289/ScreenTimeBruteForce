@@ -33,10 +33,11 @@ def keyExists(secret64, salt64, conn=connect()):
 
 
 def addKey(secret64, salt64, key, conn=connect()):
-    conn.execute("INSERT INTO KEYS (secret64, salt64, key) \
-      VALUES (?, ?, ?)", (
-        secret64,
-        salt64,
-        key,
-    ))
-    conn.commit()
+    if not keyExists(secret64, salt64):
+        conn.execute("INSERT INTO KEYS (secret64, salt64, key) \
+          VALUES (?, ?, ?)", (
+            secret64,
+            salt64,
+            key,
+        ))
+        conn.commit()

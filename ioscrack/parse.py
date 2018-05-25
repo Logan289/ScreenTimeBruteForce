@@ -45,4 +45,6 @@ def argparse():
         help="where backups are located",
         metavar="folder",
         type=lambda x: isFolder(parser, x))
+    parser.add_argument(
+        "-t", "--test", help="cracks devices in `tests/`", action="store_true")
     return parser

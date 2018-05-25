@@ -14,6 +14,21 @@ This has been tested with [Python 2.7](https://www.python.org/downloads/release/
 
 Requires [Passlib](https://passlib.readthedocs.io/en/stable/) Install with `pip install passlib`
 
+## Usage
+
+    usage: iOSCrack.py [-h] [-a] [-c] [-b folder]
+
+    a script which is used to crack the restriction passcode of an iPhone/iPad
+    through a flaw in unencrypted backups allowing the hash and salt to be
+    discovered
+
+    optional arguments:
+      -h, --help            show this help message and exit
+      -a, --automatically   automatically finds and cracks hashes
+      -c, --cli             prompts user for input
+      -b folder, --backup folder
+                            where backups are located
+
 ## How to Use
 
 1.  Clone repository
@@ -30,22 +45,11 @@ Requires [Passlib](https://passlib.readthedocs.io/en/stable/) Install with `pip 
 
 ![GIF](docs/ioscrack.gif)
 
-## Usage
+## How to Test
 
-```bash
-usage: iOSCrack.py [-h] [-a] [-c] [-b folder]
+Run `ioscrack.py` with the test option
 
-a script which is used to crack the restriction passcode of an iPhone/iPad
-through a flaw in unencrypted backups allowing the hash and salt to be
-discovered
-
-optional arguments:
-  -h, --help            show this help message and exit
-  -a, --automatically   automatically finds and cracks hashes
-  -c, --cli             prompts user for input
-  -b folder, --backup folder
-                        where backups are located
-```
+         python ioscrack.py -t
 
 ## How It Works
 
@@ -57,7 +61,7 @@ Done by using the [pbkdf2](http://www.ietf.org/rfc/rfc2898.txt) hash with the Pa
 
 3.  Brute force pins from 1 to 9999
 
-4.  Adds successful pin to local database
+4.  Adds successful pins to local database
 
 ## How to Protect Against
 

@@ -15,6 +15,8 @@ def handleArgs():
         prompt()
     if args.backup:
         crackHashes(findHashes(path=args.backup))
+    if args.test:
+        crackHashes(findHashes(path="tests"))
     if not any(vars(args)[key] for key in vars(args).keys()):
         parser.print_help()
 
