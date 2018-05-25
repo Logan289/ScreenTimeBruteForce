@@ -1,10 +1,12 @@
 from argparse import ArgumentParser
 from os import listdir
+
 from ioscrack.paths import isFolder, fixPath
 from ioscrack.idevice import iDevice
+from ioscrack.paths import backupPaths
 
 
-def findHashes(path):
+def findHashes(path=backupPaths()):
     devices = []
     path = fixPath(path)
     print("\nLooking for backups in %s..." % path),

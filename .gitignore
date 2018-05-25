@@ -5,4 +5,5 @@ venv/
 build/
 dist/
 
+.DS_Store
 pins.db

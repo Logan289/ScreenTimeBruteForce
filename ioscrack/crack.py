@@ -6,8 +6,8 @@ from passlib.utils.pbkdf2 import pbkdf2
 from ioscrack.database import addKey, keyExists
 
 COMMON_KEYS = [
-    1234, 1111, 0000, 1212, 7777, 1004, 2000, 4444, 2222, 6969, 9999, 3333,
-    5555, 6666, 1122, 1313, 8888, 4321, 2001, 1010, 2580
+    1234, 1111, 0000, 1212, 7777, 1004, 2000, 4444, 2222, 6969,
+    9999, 3333, 5555, 6666, 1122, 1313, 8888, 4321, 2001, 1010
 ]
 
 
@@ -44,55 +44,65 @@ def crack(secret64, salt64):
     secret64 = secret64.strip()
     salt64 = salt64.strip()
     inDB = keyExists(secret64, salt64)
+    # inDB = False
     if inDB:
         key = inDB[0]
         print_key(key, message="in database")
         return key
     start_t = time()
     # Top 20 common pins
-    key = tryPinInRange(secret64, salt64, start_t, list=COMMON_KEYS,
-                        message="common year", start=1900, stop=2018)
+    key = tryPinInRange(secret64=secret64, salt64=salt64, start_t=start_t, list=COMMON_KEYS,
+                        message="top 20 common pins")
     if key:
         return key
     # Common birth dates
-    key = tryPinInRange(secret64, salt64, start_t,
+    key = tryPinInRange(secret64=secret64, salt64=salt64, start_t=start_t,
                         message="common year", start=1900, stop=2018)
     if key:
         return key
 
     # Brute force all pins
-    key = tryPinInRange(secret64, salt64, start_t,
+    key = tryPinInRange(secret64=secret64, salt64=salt64, start_t=start_t,
                         message="brute force", stop=10000)
     if key:
         return key
     print("Invalid Key and/or Salt")
 
 
-def tryPinInRange(secret64, salt64, start_t, message=None, list=None, start=None, stop=0):
+def tryPinInRange(**kwargs):
+    start = kwargs.get("start")
+    stop = kwargs.get("stop")
+    list = kwargs.get("list")
+    start_t = kwargs.get("start_t")
+    secret64 = kwargs.get("secret64")
+    salt64 = kwargs.get("salt64")
+    message = kwargs.get("message")
     if start and stop:
         rangeArgs = (start, stop)
     elif stop:
         rangeArgs = (stop, )
+    elif list:
+        rangeArgs = (len(list),)
 
-    if list:
-        for i in list:
-            key = tryAndCheck(i, secret64, salt64,
+    for i in range(*rangeArgs):
+        if list:
+            key = tryAndCheck(i=list[i], secret64=secret64, salt64=salt64,
                               start_t=start_t, message=message)
-            if key:
-                return key
-    else:
-        for i in range(*rangeArgs):
-            key = tryAndCheck(i, secret64, salt64,
+        else:
+            key = tryAndCheck(i=i, secret64=secret64, salt64=salt64,
                               start_t=start_t, message=message)
-            if key:
-                return key
+        if key:
+            return key
 
 
-def tryAndCheck(i, secret64, salt64, start_t=None, message=None):
-    key = "%04d" % (i)
+def tryAndCheck(**kwargs):
+    key = "%04d" % (kwargs.get("i"))
+    secret64 = kwargs.get("secret64")
+    salt64 = kwargs.get("salt64")
     print_try(key)
     if check(secret64, salt64, key):
-        print_key(key, message=message, start_t=start_t)
+        print_key(key, message=kwargs.get("message"),
+                  start_t=kwargs.get("start_t"))
         return key
 
 
