@@ -1,4 +1,4 @@
-# iOS Restriction Passcode Brute Force ![Version](https://img.shields.io/badge/Version-2.0.0-blue.svg?style=flat-square)
+# iOS Restriction Passcode Brute Force ![Version](https://img.shields.io/badge/Version-2.1.0-blue.svg?style=flat-square)
 
 [![Python](https://img.shields.io/badge/Python-2.7%20&%203.6-orange.svg?style=flat-square)](https://www.python.org/downloads/release/python-2714/) ![OS](https://img.shields.io/badge/Works%20On-Linux%20|%20macOS%20|%20Windows%20-green.svg?style=flat-square) ![iOS](https://img.shields.io/badge/Tested%20On%20iOS-9.3.5%20|%2010.0.1%20|%2011.2.1-green.svg?style=flat-square) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com) [![Code Climate](https://img.shields.io/codeclimate/maintainability/thehappydinoa/iOSRestrictionBruteForce.svg?style=flat-square)](https://codeclimate.com/github/thehappydinoa/iOSRestrictionBruteForce)
 

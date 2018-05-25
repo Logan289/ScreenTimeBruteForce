@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# iOSRestrictionBruteForce Version 2.1.0
 from builtins import input
 
 from ioscrack.parse import argparse, findHashes
