@@ -9,9 +9,11 @@ def fixPath(path):
         return path + '/'
 
 
-def isFolder(parser, path):
+def isFolder(path, parser=False):
     if not isdir(path):
-        return parser.error("The folder %s does not exist!" % path)
+        if parser:
+            return parser.error("The folder %s does not exist!" % path)
+        return False
     else:
         return fixPath(path)
 

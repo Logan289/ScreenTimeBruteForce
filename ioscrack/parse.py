@@ -6,24 +6,29 @@ from ioscrack.idevice import iDevice
 from ioscrack.paths import backupPaths
 
 
-def findHashes(path=backupPaths()):
+def findHashes(path=backupPaths(), test=False):
     devices = []
     path = fixPath(path)
-    print("\nLooking for backups in %s..." % path),
+    if not test:
+        print("\nLooking for backups in %s..." % path),
     try:
         backup_dir = listdir(path)
         if len(backup_dir) > 0:
-            print("Directory Found")
+            if not test:
+                print("Directory Found")
             for bkup_dir in backup_dir:
-                print("Found %s" % bkup_dir)
+                if not test:
+                    print("Found %s" % bkup_dir)
                 device = iDevice(path + bkup_dir)
                 devices.append(device)
             return devices
         else:
-            print("Unable to find backups in %s" % bkup_dir)
+            if not test:
+                print("Unable to find backups in %s" % bkup_dir)
     except OSError as e:
         # print(str(e))
-        print("Directory Not Found")
+        if not test:
+            print("Directory Not Found")
         return devices
 
 
@@ -44,7 +49,7 @@ def argparse():
         "--backup",
         help="where backups are located",
         metavar="folder",
-        type=lambda x: isFolder(parser, x))
+        type=lambda path: isFolder(path, parser=parser))
     parser.add_argument(
         "-t", "--test", help="cracks devices in `tests/`", action="store_true")
     return parser

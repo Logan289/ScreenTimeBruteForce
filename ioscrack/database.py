@@ -1,5 +1,7 @@
 import sqlite3
 
+from ioscrack import crack
+
 
 def connect(db_name="pins.db"):
     conn = sqlite3.connect(db_name)
@@ -19,7 +21,7 @@ def createTable(conn):
     conn.execute('''CREATE TABLE KEYS
          (secret64      CHAR(50) NOT NULL,
          salt64         CHAR(50) NOT NULL,
-         key            INT      NOT NULL);''')
+         key            CHAR(4)  NOT NULL);''')
 
 
 def keyExists(secret64, salt64, conn=connect()):
@@ -29,6 +31,8 @@ def keyExists(secret64, salt64, conn=connect()):
             salt64,
         ))
     results = cursor.fetchone()
+    if results:
+        results = crack.formatKey(results[0])
     return results
 
 

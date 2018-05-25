@@ -25,13 +25,17 @@ def check(secret64, salt64, key):
     return status
 
 
+def formatKey(pin):
+    return "%04d" % int(pin)
+
+
 def print_try(key):
     print("Trying: %s \r" % key, end=""),
 
 
 def print_key(key, message=None, start_t=None):
     if start_t:
-        str_duration = "it took %s secconds" % round(time() - start_t, 2)
+        str_duration = "it took %d ms" % ((time() - start_t) * 1000)
     else:
         str_duration = ""
     if message:
@@ -40,32 +44,31 @@ def print_key(key, message=None, start_t=None):
         print("Passcode is %s %s\n" % (key, str_duration))
 
 
-def crack(secret64, salt64):
+def crack(secret64, salt64, test=False):
     secret64 = secret64.strip()
     salt64 = salt64.strip()
     start_t = time()
     inDB = keyExists(secret64, salt64)
     # inDB = False
     if inDB:
-        i = inDB[0]
         key = tryPinInRange(secret64=secret64, salt64=salt64, start_t=start_t,
-                            list=[i], message="in database")
+                            list=[inDB], message="in database", test=test)
         if key:
             return key
     # Top 20 common pins
     key = tryPinInRange(secret64=secret64, salt64=salt64, start_t=start_t,
-                        list=COMMON_KEYS, message="top 20 common pins")
+                        list=COMMON_KEYS, message="top 20 common pins", test=test)
     if key:
         return key
     # Common birth dates
     key = tryPinInRange(secret64=secret64, salt64=salt64, start_t=start_t,
-                        message="common year", start=1900, stop=2018)
+                        message="common year", start=1900, stop=2018, test=test)
     if key:
         return key
 
     # Brute force all pins
     key = tryPinInRange(secret64=secret64, salt64=salt64, start_t=start_t,
-                        message="brute force", stop=10000)
+                        message="brute force", stop=10000, test=test)
     if key:
         return key
     print("Invalid Key and/or Salt")
@@ -89,25 +92,30 @@ def tryPinInRange(**kwargs):
     salt64 = kwargs.get("salt64")
     message = kwargs.get("message")
 
+    test = kwargs.get("test")
+
     for i in range(*rangeArgs):
         if list:
             key = tryAndCheck(i=list[i], secret64=secret64, salt64=salt64,
-                              start_t=start_t, message=message)
+                              start_t=start_t, message=message, test=test)
         else:
             key = tryAndCheck(i=i, secret64=secret64, salt64=salt64,
-                              start_t=start_t, message=message)
+                              start_t=start_t, message=message, test=test)
         if key:
             return key
 
 
 def tryAndCheck(**kwargs):
-    key = "%04d" % (kwargs.get("i"))
+    key = formatKey(kwargs.get("i"))
     secret64 = kwargs.get("secret64")
     salt64 = kwargs.get("salt64")
-    print_try(key)
+    test = kwargs.get("test")
+    if not test:
+        print_try(key)
     if check(secret64, salt64, key):
-        print_key(key, message=kwargs.get("message"),
-                  start_t=kwargs.get("start_t"))
+        if not test:
+            print_key(key, message=kwargs.get("message"),
+                      start_t=kwargs.get("start_t"))
         return key
 
 
