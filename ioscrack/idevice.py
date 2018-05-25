@@ -12,6 +12,7 @@ class iDevice():
             raise ValueError("%s is not a valid directory" % path)
         INFOPATH = path + "/Info.plist"
         if isfile(INFOPATH):
+            self.crackable = True
             self.info = readPlist(INFOPATH)
             self.name = self.info['Display Name']
             self.lastBackupDate = self.info['Last Backup Date']
@@ -19,27 +20,36 @@ class iDevice():
             self.UDID = self.info['Unique Identifier'].lower()
             self.iOS = self.info['Product Version']
             self.targetType = self.info['Target Type']
+            self.passfile = ""
             self.findSecretKeySalt()
         else:
             raise ValueError("%s does not appear to contain a backup" % path)
 
     def findSecretKeySalt(self, newPath=False):
         restrictionsFile = "/398bc9c2aeeab4cb0c12ada0f52eea12cf14f40b"
+        if newPath:
+            path = self.path + "/39" + restrictionsFile
+        else:
+            path = self.path + restrictionsFile
+        if isfile(path):
+            self.getSecretFromFile(path)
+        elif not newPath:
+            self.findSecretKeySalt(newPath=(not newPath))
+
+    def getSecretFromFile(self, path):
         try:
-            if newPath:
-                passfile = open(self.path + "/39" + restrictionsFile, "r")
-            else:
-                passfile = open(self.path + restrictionsFile, "r")
-        except IOError:
-            if not newPath:
-                passfile = self.findSecretKeySalt(newPath=(not newPath))
-        try:
-            line_list = passfile.readlines()
-            self.secret64 = line_list[6][1:29]
-            self.salt64 = line_list[10][1:9]
+            line_list = readPlist(path)
+            self.secret64 = line_list["RestrictionsPasswordKey"].asBase64()
+            self.salt64 = line_list["RestrictionsPasswordSalt"].asBase64()
         except IndexError:
-            raise ValueError("%s appears to be encrypted" % self.path)
+            print("%s appears to be encrypted" % self.path)
+            self.crackable = False
+        except AttributeError:
+            print("Could not find restrictionsFile")
+            self.crackable = False
 
     def crack(self):
-        self.pin = crack(self.secret64, self.salt64)
-        return self.pin
+        if self.crackable:
+            self.pin = crack(self.secret64, self.salt64)
+            return self.pin
+        return

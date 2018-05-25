@@ -26,46 +26,74 @@ def check(secret64, salt64, key):
 
 
 def print_try(key):
-    print("Trying: %d \r" % key, end=""),
+    print("Trying: %s \r" % key, end=""),
+
+
+def print_key(key, message=None, start_t=None):
+    if start_t:
+        str_duration = "it took %s secconds" % round(time() - start_t, 2)
+    else:
+        str_duration = ""
+    if message:
+        print("Passcode is %s (%s) %s\n" % (key, message, str_duration))
+    else:
+        print("Passcode is %s %s\n" % (key, str_duration))
 
 
 def crack(secret64, salt64):
     secret64 = secret64.strip()
     salt64 = salt64.strip()
-    start_t = time()
     inDB = keyExists(secret64, salt64)
     if inDB:
         key = inDB[0]
-        duration = round(time() - start_t, 2)
-        print("Passcode is %s (in database)\n" % (key))
+        print_key(key, message="in database")
         return key
+    start_t = time()
     # Top 20 common pins
-    for i in COMMON_KEYS:
-        print_try(i)
-        key = "%04d" % (i)
-        if check(secret64, salt64, key):
-            duration = round(time() - start_t, 2)
-            print("Passcode is %s (top %d most common passcode)\n" %
-                  (key, len(COMMON_KEYS)))
-            return key
+    key = tryPinInRange(secret64, salt64, start_t, list=COMMON_KEYS,
+                        message="common year", start=1900, stop=2018)
+    if key:
+        return key
     # Common birth dates
-    for i in range(1900, 2017):
-        print_try(i)
-        key = "%04d" % (i)
-        if check(secret64, salt64, key):
-            duration = round(time() - start_t, 2)
-            print("Passcode is %s (common year) it took %s secconds\n" %
-                  (key, duration))
-            return key
+    key = tryPinInRange(secret64, salt64, start_t,
+                        message="common year", start=1900, stop=2018)
+    if key:
+        return key
+
     # Brute force all pins
-    for i in range(10000):
-        print_try(i)
-        key = "%04d" % (i)
-        if check(secret64, salt64, key):
-            duration = round(time() - start_t, 2)
-            print("Passcode is %s it took %s secconds\n" % (key, duration))
-            return key
+    key = tryPinInRange(secret64, salt64, start_t,
+                        message="brute force", stop=10000)
+    if key:
+        return key
     print("Invalid Key and/or Salt")
+
+
+def tryPinInRange(secret64, salt64, start_t, message=None, list=None, start=None, stop=0):
+    if start and stop:
+        rangeArgs = (start, stop)
+    elif stop:
+        rangeArgs = (stop, )
+
+    if list:
+        for i in list:
+            key = tryAndCheck(i, secret64, salt64,
+                              start_t=start_t, message=message)
+            if key:
+                return key
+    else:
+        for i in range(*rangeArgs):
+            key = tryAndCheck(i, secret64, salt64,
+                              start_t=start_t, message=message)
+            if key:
+                return key
+
+
+def tryAndCheck(i, secret64, salt64, start_t=None, message=None):
+    key = "%04d" % (i)
+    print_try(key)
+    if check(secret64, salt64, key):
+        print_key(key, message=message, start_t=start_t)
+        return key
 
 
 def crackHashes(devices):
@@ -73,5 +101,4 @@ def crackHashes(devices):
         print("\nUDID: %s \n%s: %s running iOS %s" %
               (device.UDID, device.targetType, device.model, device.iOS))
         print("Cracking restrictions passcode for %s..." % device.name)
-        #if not session[device.UDID]:
         device.crack()

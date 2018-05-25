@@ -20,7 +20,7 @@ def findHashes(path):
         else:
             print("Unable to find backups in %s" % bkup_dir)
     except OSError as e:
-        print(str(e))
+        # print(str(e))
         print("Directory Not Found")
         return devices
 
@@ -28,8 +28,7 @@ def findHashes(path):
 def argparse():
     parser = ArgumentParser(
         prog="iOSCrack.py",
-        description=
-        "a script which is used to crack the restriction passcode of an iPhone/iPad through a flaw in unencrypted backups allowing the hash and salt to be discovered"
+        description="a script which is used to crack the restriction passcode of an iPhone/iPad"
     )
     parser.add_argument(
         "-a",

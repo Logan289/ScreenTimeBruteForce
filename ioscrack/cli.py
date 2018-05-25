@@ -3,13 +3,17 @@ from builtins import input
 from ioscrack.crack import crack
 
 
+def verify(string, length):
+    return (not len(string) < length and not string == "")
+
+
 def prompt():
     secret64 = input("\nEnter Secret Key: ")
-    if len(secret64) < 10 or secret64 == "":
+    if verify(secret64, 10):
         print("Invalid Key")
-        exit()
+        prompt()
     salt64 = input("Enter Salt: ")
-    if len(salt64) < 3 or salt64 == "":
+    if verify(salt64, 3):
         print("Invalid Salt")
-        exit()
+        prompt()
     crack(secret64, salt64)

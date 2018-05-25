@@ -20,12 +20,12 @@ def main():
             prompt()
         if args.backup:
             crackHashes(findHashes(args.backup))
-        if not args.automatically and not args.cli and not args.backup:
+        if not any(vars(args)[key] for key in vars(args).keys()):
             parser.print_help()
+        input("Press [enter] to exit")
     except KeyboardInterrupt:
         print("Exiting...\r"),
         exit(0)
-    input("Press [enter] to exit")
 
 
 if __name__ == "__main__":
