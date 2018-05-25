@@ -51,8 +51,8 @@ def crack(secret64, salt64):
         return key
     start_t = time()
     # Top 20 common pins
-    key = tryPinInRange(secret64=secret64, salt64=salt64, start_t=start_t, list=COMMON_KEYS,
-                        message="top 20 common pins")
+    key = tryPinInRange(secret64=secret64, salt64=salt64, start_t=start_t,
+                        list=COMMON_KEYS, message="top 20 common pins")
     if key:
         return key
     # Common birth dates

@@ -30,7 +30,7 @@ def findHashes(path=backupPaths()):
 def argparse():
     parser = ArgumentParser(
         prog="iOSCrack.py",
-        description="a script which is used to crack the restriction passcode of an iPhone/iPad"
+        description="a script to crack the restriction passcode of an iDevice"
     )
     parser.add_argument(
         "-a",

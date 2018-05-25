@@ -6,20 +6,24 @@ from ioscrack.cli import prompt
 from ioscrack.crack import crackHashes
 
 
-def main():
+def handleArgs():
     parser = argparse()
     args = parser.parse_args()
+    if args.automatically and not args.cli:
+        crackHashes(findHashes())
+    if args.cli:
+        prompt()
+    if args.backup:
+        crackHashes(findHashes(path=args.backup))
+    if not any(vars(args)[key] for key in vars(args).keys()):
+        parser.print_help()
+
+
+def main():
     try:
         print("\n iOSRestrictionBruteForce")
         print(" Written by thehappydinoa \n")
-        if args.automatically and not args.cli:
-            crackHashes(findHashes())
-        if args.cli:
-            prompt()
-        if args.backup:
-            crackHashes(findHashes(path=args.backup))
-        if not any(vars(args)[key] for key in vars(args).keys()):
-            parser.print_help()
+        handleArgs()
         input("Press [enter] to exit")
     except KeyboardInterrupt:
         print("Exiting...\r"),
