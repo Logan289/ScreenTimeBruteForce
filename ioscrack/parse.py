@@ -26,7 +26,6 @@ def findHashes(path=backupPaths(), test=False):
             if not test:
                 print("Unable to find backups in %s" % bkup_dir)
     except OSError as e:
-        # print(str(e))
         if not test:
             print("Directory Not Found")
         return devices
@@ -51,5 +50,5 @@ def argparse():
         metavar="folder",
         type=lambda path: isFolder(path, parser=parser))
     parser.add_argument(
-        "-t", "--test", help="cracks devices in `tests/`", action="store_true")
+        "-t", "--test", help="runs unittests", action="store_true")
     return parser

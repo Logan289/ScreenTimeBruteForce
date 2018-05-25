@@ -49,7 +49,6 @@ def crack(secret64, salt64, test=False):
     salt64 = salt64.strip()
     start_t = time()
     inDB = keyExists(secret64, salt64)
-    # inDB = False
     if inDB:
         key = tryPinInRange(secret64=secret64, salt64=salt64, start_t=start_t,
                             list=[inDB], message="in database", test=test)
@@ -57,12 +56,14 @@ def crack(secret64, salt64, test=False):
             return key
     # Top 20 common pins
     key = tryPinInRange(secret64=secret64, salt64=salt64, start_t=start_t,
-                        list=COMMON_KEYS, message="top 20 common pins", test=test)
+                        list=COMMON_KEYS, message="top 20 common pins",
+                        test=test)
     if key:
         return key
     # Common birth dates
     key = tryPinInRange(secret64=secret64, salt64=salt64, start_t=start_t,
-                        message="common year", start=1900, stop=2018, test=test)
+                        message="common year", start=1900, stop=2018,
+                        test=test)
     if key:
         return key
 

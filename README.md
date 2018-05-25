@@ -16,18 +16,17 @@ Requires [Passlib](https://passlib.readthedocs.io/en/stable/) Install with `pip 
 
 ## Usage
 
-    usage: iOSCrack.py [-h] [-a] [-c] [-b folder]
+    usage: iOSCrack.py [-h] [-a] [-c] [-b folder] [-t]
 
-    a script which is used to crack the restriction passcode of an iPhone/iPad
-    through a flaw in unencrypted backups allowing the hash and salt to be
-    discovered
+    a script to crack the restriction passcode of an iDevice
 
     optional arguments:
-      -h, --help            show this help message and exit
-      -a, --automatically   automatically finds and cracks hashes
-      -c, --cli             prompts user for input
-      -b folder, --backup folder
-                            where backups are located
+    -h, --help            show this help message and exit
+    -a, --automatically   automatically finds and cracks hashes
+    -c, --cli             prompts user for input
+    -b folder, --backup folder
+                        where backups are located
+    -t, --test            runs unittest
 
 ## How to Use
 
