@@ -1,1 +1,1 @@
-Passlib==1.7.1
+requests
