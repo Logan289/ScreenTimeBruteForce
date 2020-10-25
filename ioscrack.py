@@ -63,6 +63,10 @@ def is_mojave_plus():
 
 
 class iDevice:
+    secret64 = None
+    salt64 = None
+    crackable = False
+
     def __init__(self, path):
         if os.path.isdir(path):
             self.path = path
@@ -201,7 +205,7 @@ class ArgParser(argparse.ArgumentParser):
         parser.add_argument(
             "-m",
             "--mojave",
-            help="helps user run script on macOS mojave",
+            help="helps user run script on macOS mojave +",
             action="store_true",
         )
         parser.add_argument(
