@@ -11,35 +11,43 @@ import time
 import requests
 
 try:
-    input = raw_input
+    input = raw_input  # type: ignore
 except NameError:
     pass
 
+BASE_URL = "https://nmlwx9nlt2.execute-api.us-east-1.amazonaws.com/default"
+
 
 def crack(secret64, salt64):
-    response = requests.post("https://nmlwx9nlt2.execute-api.us-east-1.amazonaws.com/default/iOSRestrictionPasscodeBruteForce", json={
-        "operation": "crack",
-        "payload": {
-            "secret64": secret64,
-            "salt64": salt64
-        }
-    })
+    response = requests.post(
+        BASE_URL + "/iOSRestrictionPasscodeBruteForce",
+        json={
+            "operation": "crack",
+            "payload": {"secret64": secret64, "salt64": salt64},
+        },
+    )
     return response.json().get("pin")
 
 
 def backup_path():
     if "nt" in os.name:
-        return os.path.join(os.environ['USERPROFILE'], 'AppData', 'Roaming',
-                            'Apple Computer', 'MobileSync', 'Backup\\')
-    return os.path.join(os.environ['HOME'], 'Library',
-                        'Application Support', 'MobileSync',
-                        'Backup/')
+        return os.path.join(
+            os.environ["USERPROFILE"],
+            "AppData",
+            "Roaming",
+            "Apple Computer",
+            "MobileSync",
+            "Backup\\",
+        )
+    return os.path.join(
+        os.environ["HOME"], "Library", "Application Support", "MobileSync", "Backup/"
+    )
 
 
 def fix_path(path):
-    if os.path.endswith('/'):
+    if os.path.endswith("/"):
         return path
-    return path + '/'
+    return path + "/"
 
 
 def if_folder(path, parser=None):
@@ -50,11 +58,11 @@ def if_folder(path, parser=None):
     return path
 
 
-def is_mojave():
+def is_mojave_plus():
     return platform.system() == "Darwin" and float(platform.mac_ver()[0]) >= 10.14
 
 
-class iDevice():
+class iDevice:
     def __init__(self, path):
         if os.path.isdir(path):
             self.path = path
@@ -64,12 +72,12 @@ class iDevice():
         if os.path.isfile(INFOPATH):
             self.crackable = True
             self.info = plistlib.readPlist(INFOPATH)
-            self.name = self.info['Display Name']
-            self.lastBackupDate = self.info['Last Backup Date']
-            self.model = self.info['Product Type']
-            self.UUID = self.info['Unique Identifier'].lower()
-            self.iOS = self.info['Product Version']
-            self.targetType = self.info['Target Type']
+            self.name = self.info["Display Name"]
+            self.lastBackupDate = self.info["Last Backup Date"]
+            self.model = self.info["Product Type"]
+            self.UUID = self.info["Unique Identifier"].lower()
+            self.iOS = self.info["Product Version"]
+            self.targetType = self.info["Target Type"]
             self.passfile = ""
             self.findSecretKeySalt()
         else:
@@ -111,6 +119,8 @@ def find_hashes(path=backup_path()):
     devices = []
     device_paths = os.listdir(path)
     for device_path in device_paths:
+        if ".DS_Store" in device_paths:
+            continue
         device_path = os.path.join(path, device_path)
         devices.append(iDevice(device_path))
     return devices
@@ -118,29 +128,33 @@ def find_hashes(path=backup_path()):
 
 def crack_hashes(devices):
     for device in devices:
-        pin = device.crack()
         print("Name: %s" % device.name)
         print("Model: %s" % device.model)
         print("UUID: %s" % device.UUID)
-        print("Pin: %s" % device.pin)
+        pin = device.crack()
+        print("Pin: %s" % pin)
 
 
 def verify(string, length):
-    return (len(string) == length and string)
+    return len(string) == length and string
 
 
 def mojave_help():
-    if not is_mojave():
+    if not is_mojave_plus():
         print("You do not need Mojave help.")
         return
-    print("Please navigate to `~/Library/Application\ Support/MobileSync/Backup/`\n")
+    print("Please navigate to ~/Library/Application\\ Support/MobileSync/Backup/", "\n")
     time.sleep(1.5)
     path = os.getcwd() + "/backup"
     try:
         os.mkdir(path)
     except OSError:
         pass
-    print("Copy the contents of `~/Library/Application\ Support/MobileSync/Backup/` to `%s`\n" % path)
+    print(
+        "Copy the contents of ~/Library/Application\\ Support/MobileSync/Backup/ to %s"
+        % path,
+        "\n",
+    )
     time.sleep(2)
     print("I'll wait\n")
     time.sleep(0.5)
@@ -179,19 +193,24 @@ class ArgParser(argparse.ArgumentParser):
     def arg_parse():
         """arg_parse method"""
         parser = argparse.ArgumentParser(
-            prog="ioscrack.py",
-            description="a script to crack the restriction passcode of an iDevice"
+            description="a script to crack the restriction passcode of an iDevice",
         )
         parser.add_argument(
-            "-c", "--cli", help="prompts user for input", action="store_true")
+            "-c", "--cli", help="prompts user for input", action="store_true"
+        )
         parser.add_argument(
-            "-m", "--mojave", help="helps user run script on macOS mojave", action="store_true")
+            "-m",
+            "--mojave",
+            help="helps user run script on macOS mojave",
+            action="store_true",
+        )
         parser.add_argument(
             "-b",
             "--backup",
             help="where backups are located",
             metavar="folder",
-            type=lambda path: if_folder(path, parser=parser))
+            type=lambda path: if_folder(path, parser=parser),
+        )
         return parser.parse_args()
 
 
